@@ -273,7 +273,7 @@ h2.section-title{
 .hero-controls.is-dimmed:focus-within{
   opacity:1; transform:translateX(-50%) scale(1);
 }
-.hero.video-ready .hero-controls{ display:flex; }
+.hero.video-ready:not(.video-off) .hero-controls{ display:flex; }
 .hero.text-hidden{ cursor:pointer; }
 .hero.cursor-hidden, .hero.cursor-hidden *{ cursor:none; }
 .hero-ctrl-btn{
@@ -290,6 +290,22 @@ h2.section-title{
   white-space:nowrap;
 }
 
+/* Botón standalone para reactivar el fondo de video, cuando está en modo degradado */
+.hero-video-on-btn{
+  display:none; align-items:center; gap:10px;
+  position:absolute; left:50%; bottom:28px; transform:translateX(-50%); z-index:3;
+  padding:13px 24px 13px 20px; border-radius:var(--radius-pill); border:1px solid rgba(255,255,255,.18);
+  background:rgba(20,14,24,.5); color:#fff; font-size:14px; font-weight:600;
+  backdrop-filter:blur(14px) saturate(160%); -webkit-backdrop-filter:blur(14px) saturate(160%);
+  box-shadow:0 10px 30px rgba(0,0,0,.25);
+  transition:background .2s var(--ease), transform .15s var(--ease);
+}
+.hero-video-on-btn svg{ width:20px; height:20px; flex:none; color:var(--turquoise); }
+.hero-video-on-btn:hover{ background:rgba(255,255,255,.14); }
+.hero-video-on-btn:active{ transform:translateX(-50%) scale(.97); }
+.hero.video-ready.video-off .hero-video-on-btn{ display:inline-flex; }
+.hero.video-off .hero-media video{ display:none; }
+
 @media (max-width:640px){
   .hero{ padding-top:64px; }
   .hero-content{ padding:40px 0 64px; }
@@ -299,6 +315,7 @@ h2.section-title{
   .hero-ctrl-btn{ width:38px; height:38px; }
   .hero-ctrl-label span{ display:none; }
   .hero-ctrl-label{ padding:0 12px; }
+  .hero-video-on-btn{ bottom:18px; padding:11px 18px 11px 16px; font-size:13px; }
 }
 
 /* ==========================================================================
@@ -813,7 +830,16 @@ h2.section-title{
       <svg class="icon-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" style="display:none;"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="m3 3 18 18"/></svg>
       <span id="heroHideTextLabel">Ocultar texto</span>
     </button>
+    <div class="hero-ctrl-sep" aria-hidden="true"></div>
+    <button class="hero-ctrl-btn" id="heroVideoOffBtn" type="button" aria-label="Cambiar a fondo con degradado, sin video">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 15l5-5 4 4 3-3 6 6"/><circle cx="8.5" cy="8.5" r="1.5"/></svg>
+    </button>
   </div>
+
+  <button class="hero-video-on-btn" id="heroVideoOnBtn" type="button" aria-label="Mostrar el video de fondo, con el texto visible y sin sonido">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="2.5" y="6" width="14" height="12" rx="2"/><path d="m16.5 10.5 5-3v9l-5-3"/></svg>
+    <span>Ver video de fondo</span>
+  </button>
 </section>
 
 <!-- ==========================================================================
@@ -1393,8 +1419,10 @@ h2.section-title{
   var heroHideTextLabel = document.getElementById('heroHideTextLabel');
 
   var heroRestartBtn = document.getElementById('heroRestartBtn');
+  var heroVideoOffBtn = document.getElementById('heroVideoOffBtn');
+  var heroVideoOnBtn = document.getElementById('heroVideoOnBtn');
 
-  if (heroVideo && heroPlayBtn && heroMuteBtn && heroHideTextBtn && heroRestartBtn){
+  if (heroVideo && heroPlayBtn && heroMuteBtn && heroHideTextBtn && heroRestartBtn && heroVideoOffBtn && heroVideoOnBtn){
     /* Los controles solo se muestran si el video de fondo carga con éxito.
        Si falla (o no hay archivo), se ve el degradado de respaldo, sin controles. */
     function markHeroVideoReady(){ heroSection.classList.add('video-ready'); }
@@ -1475,6 +1503,23 @@ h2.section-title{
       heroHideTextBtn.blur();
     });
 
+    /* Alternar fondo: video <-> degradado */
+    heroVideoOffBtn.addEventListener('click', function(){
+      heroSection.classList.add('video-off');
+      heroVideo.pause();
+      heroVideoOffBtn.blur();
+    });
+
+    heroVideoOnBtn.addEventListener('click', function(){
+      heroSection.classList.remove('video-off');
+      setHeroTextHidden(false);
+      setHeroMuted(true);
+      setHeroPlayIcon(false);
+      heroVideo.play();
+      resetControlsIdleTimer();
+      heroVideoOnBtn.blur();
+    });
+
     /* Atajos de teclado del hero: solo cuando la sección de inicio está visible
        y el foco no está sobre otro control interactivo (para no romper la navegación normal). */
     var heroVisible = true;
@@ -1541,7 +1586,7 @@ h2.section-title{
     var CONTROLS_IDLE_DELAY = 2200;
 
     function shouldDimControls(){
-      return heroSection.classList.contains('text-hidden') && !heroVideo.paused;
+      return heroSection.classList.contains('text-hidden') && !heroSection.classList.contains('video-off') && !heroVideo.paused;
     }
     function dimControls(){
       if (shouldDimControls()){
