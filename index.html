@@ -257,10 +257,11 @@ h2.section-title{
 }
 .hero-ctas{ margin-top:36px; display:flex; gap:16px; flex-wrap:wrap; }
 
-/* Hero video controls bar */
+/* Hero video controls bar: solo visibles cuando el video de fondo carga correctamente */
 .hero-controls{
+  display:none;
   position:absolute; left:50%; bottom:28px; transform:translateX(-50%); z-index:3;
-  display:flex; align-items:center; gap:6px; padding:8px; border-radius:var(--radius-pill);
+  align-items:center; gap:6px; padding:8px; border-radius:var(--radius-pill);
   background:rgba(20,14,24,.42); border:1px solid rgba(255,255,255,.16);
   backdrop-filter:blur(14px) saturate(160%); -webkit-backdrop-filter:blur(14px) saturate(160%);
   box-shadow:0 10px 30px rgba(0,0,0,.25);
@@ -272,6 +273,8 @@ h2.section-title{
 .hero-controls.is-dimmed:focus-within{
   opacity:1; transform:translateX(-50%) scale(1);
 }
+.hero.video-ready .hero-controls{ display:flex; }
+.hero.text-hidden{ cursor:pointer; }
 .hero.cursor-hidden, .hero.cursor-hidden *{ cursor:none; }
 .hero-ctrl-btn{
   display:inline-flex; align-items:center; justify-content:center; gap:8px;
@@ -1392,6 +1395,21 @@ h2.section-title{
   var heroRestartBtn = document.getElementById('heroRestartBtn');
 
   if (heroVideo && heroPlayBtn && heroMuteBtn && heroHideTextBtn && heroRestartBtn){
+    /* Los controles solo se muestran si el video de fondo carga con éxito.
+       Si falla (o no hay archivo), se ve el degradado de respaldo, sin controles. */
+    function markHeroVideoReady(){ heroSection.classList.add('video-ready'); }
+    function markHeroVideoUnavailable(){
+      heroSection.classList.remove('video-ready');
+      heroVideo.style.display = 'none';
+    }
+    if (heroVideo.readyState >= 2){ markHeroVideoReady(); }
+    heroVideo.addEventListener('loadeddata', markHeroVideoReady);
+    heroVideo.addEventListener('canplay', markHeroVideoReady);
+    heroVideo.addEventListener('error', markHeroVideoUnavailable);
+    heroVideo.querySelectorAll('source').forEach(function(src){
+      src.addEventListener('error', markHeroVideoUnavailable);
+    });
+
     function setHeroPlayIcon(paused){
       heroPlayBtn.setAttribute('aria-pressed', paused ? 'true' : 'false');
       heroPlayBtn.setAttribute('aria-label', paused ? 'Reproducir video' : 'Pausar video');
@@ -1457,13 +1475,64 @@ h2.section-title{
       heroHideTextBtn.blur();
     });
 
-    /* Esc: mientras el texto está oculto, restaura el texto y silencia el video */
+    /* Atajos de teclado del hero: solo cuando la sección de inicio está visible
+       y el foco no está sobre otro control interactivo (para no romper la navegación normal). */
+    var heroVisible = true;
+    var heroVisibilityObserver = new IntersectionObserver(function(entries){
+      heroVisible = entries[0].isIntersecting;
+    }, { threshold:.4 });
+    heroVisibilityObserver.observe(heroSection);
+
+    function isOtherControlFocused(){
+      var active = document.activeElement;
+      return !!(active && active !== document.body);
+    }
+
     document.addEventListener('keydown', function(e){
+      if (!heroVisible || isOtherControlFocused()) return;
+
       if (e.key === 'Escape' && heroSection.classList.contains('text-hidden')){
         setHeroTextHidden(false);
         setHeroMuted(true);
+        setHeroPlayIcon(false);
+        heroVideo.play();
+        resetControlsIdleTimer();
+        return;
+      }
+
+      if (e.key === 'Escape' && !heroSection.classList.contains('text-hidden') && heroVideo.paused){
+        setHeroMuted(true);
+        setHeroPlayIcon(false);
+        heroVideo.play();
+        resetControlsIdleTimer();
+        return;
+      }
+
+      if (e.key === 'Escape' && !heroSection.classList.contains('text-hidden') && !heroVideo.muted){
+        setHeroMuted(true);
+        resetControlsIdleTimer();
+        return;
+      }
+
+      if (e.key === 'Enter'){
+        e.preventDefault();
+        heroHideTextBtn.click();
+        return;
+      }
+
+      if ((e.key === ' ' || e.code === 'Space') && heroSection.classList.contains('text-hidden')){
+        e.preventDefault();
+        if (heroVideo.paused){ heroVideo.play(); } else { heroVideo.pause(); }
         resetControlsIdleTimer();
       }
+    });
+
+    /* Clic en el video (con el texto oculto) alterna reproducción / pausa */
+    heroSection.addEventListener('click', function(e){
+      if (!heroSection.classList.contains('text-hidden')) return;
+      if (e.target.closest('.hero-controls')) return;
+      if (heroVideo.paused){ heroVideo.play(); } else { heroVideo.pause(); }
+      resetControlsIdleTimer();
     });
 
     /* Auto-dim de los controles: solo cuando el texto está oculto y el video se reproduce */
