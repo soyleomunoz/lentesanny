@@ -1538,6 +1538,7 @@ h2.section-title{
 
     document.addEventListener('keydown', function(e){
       if (!heroVisible || isOtherControlFocused()) return;
+      if (heroSection.classList.contains('video-off')) return;
 
       if (e.key === 'Escape' && heroSection.classList.contains('text-hidden')){
         setHeroTextHidden(false);
@@ -1577,6 +1578,7 @@ h2.section-title{
 
     /* Clic en el video (con el texto oculto) alterna reproducción / pausa */
     heroSection.addEventListener('click', function(e){
+      if (heroSection.classList.contains('video-off')) return;
       if (!heroSection.classList.contains('text-hidden')) return;
       if (e.target.closest('.hero-controls')) return;
       if (heroVideo.paused){ heroVideo.play(); } else { heroVideo.pause(); }
