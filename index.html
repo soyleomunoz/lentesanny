@@ -306,6 +306,21 @@ h2.section-title{
 .hero.video-ready.video-off .hero-video-on-btn{ display:inline-flex; }
 .hero.video-off .hero-media video{ display:none; }
 
+/* Botón fijo (esquina superior derecha) para pasar al fondo degradado. No se atenúa con la inactividad. */
+.hero-video-off-btn{
+  display:none; align-items:center; justify-content:center;
+  position:absolute; top:calc(var(--nav-h) + 20px); right:24px; z-index:3;
+  width:42px; height:42px; border-radius:50%; border:1px solid rgba(255,255,255,.18);
+  background:rgba(20,14,24,.42); color:#fff;
+  backdrop-filter:blur(14px) saturate(160%); -webkit-backdrop-filter:blur(14px) saturate(160%);
+  box-shadow:0 6px 18px rgba(0,0,0,.2);
+  transition:background .2s var(--ease), transform .15s var(--ease);
+}
+.hero-video-off-btn svg{ width:19px; height:19px; }
+.hero-video-off-btn:hover{ background:rgba(255,255,255,.16); }
+.hero-video-off-btn:active{ transform:scale(.94); }
+.hero.video-ready:not(.video-off) .hero-video-off-btn{ display:inline-flex; }
+
 @media (max-width:640px){
   .hero{ padding-top:64px; }
   .hero-content{ padding:40px 0 64px; }
@@ -316,6 +331,7 @@ h2.section-title{
   .hero-ctrl-label span{ display:none; }
   .hero-ctrl-label{ padding:0 12px; }
   .hero-video-on-btn{ bottom:18px; padding:11px 18px 11px 16px; font-size:13px; }
+  .hero-video-off-btn{ top:calc(var(--nav-h) - 8px); right:16px; width:38px; height:38px; }
 }
 
 /* ==========================================================================
@@ -830,11 +846,11 @@ h2.section-title{
       <svg class="icon-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" style="display:none;"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="m3 3 18 18"/></svg>
       <span id="heroHideTextLabel">Ocultar texto</span>
     </button>
-    <div class="hero-ctrl-sep" aria-hidden="true"></div>
-    <button class="hero-ctrl-btn" id="heroVideoOffBtn" type="button" aria-label="Cambiar a fondo con degradado, sin video">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 15l5-5 4 4 3-3 6 6"/><circle cx="8.5" cy="8.5" r="1.5"/></svg>
-    </button>
   </div>
+
+  <button class="hero-video-off-btn" id="heroVideoOffBtn" type="button" aria-label="Cambiar a fondo con degradado, sin video">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 15l5-5 4 4 3-3 6 6"/><circle cx="8.5" cy="8.5" r="1.5"/></svg>
+  </button>
 
   <button class="hero-video-on-btn" id="heroVideoOnBtn" type="button" aria-label="Mostrar el video de fondo, con el texto visible y sin sonido">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="2.5" y="6" width="14" height="12" rx="2"/><path d="m16.5 10.5 5-3v9l-5-3"/></svg>
@@ -1546,7 +1562,14 @@ h2.section-title{
 
     document.addEventListener('keydown', function(e){
       if (!heroVisible || isOtherControlFocused()) return;
-      if (heroSection.classList.contains('video-off')) return;
+
+      if (heroSection.classList.contains('video-off')){
+        if (e.key === 'Enter'){
+          e.preventDefault();
+          heroVideoOnBtn.click();
+        }
+        return;
+      }
 
       if (e.key === 'Escape' && heroSection.classList.contains('text-hidden')){
         setHeroTextHidden(false);
@@ -1588,7 +1611,7 @@ h2.section-title{
     heroSection.addEventListener('click', function(e){
       if (heroSection.classList.contains('video-off')) return;
       if (!heroSection.classList.contains('text-hidden')) return;
-      if (e.target.closest('.hero-controls')) return;
+      if (e.target.closest('.hero-controls, .hero-video-off-btn, .hero-video-on-btn')) return;
       if (heroVideo.paused){ heroVideo.play(); } else { heroVideo.pause(); }
       resetControlsIdleTimer();
     });
