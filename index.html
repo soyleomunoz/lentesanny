@@ -1507,6 +1507,9 @@ h2.section-title{
     heroVideoOffBtn.addEventListener('click', function(){
       heroSection.classList.add('video-off');
       heroVideo.pause();
+      if (heroSection.classList.contains('text-hidden')){
+        setHeroTextHidden(false);
+      }
       heroVideoOffBtn.blur();
     });
 
