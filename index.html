@@ -1359,6 +1359,9 @@ h2.section-title{
 (function(){
   'use strict';
 
+  /* Desactiva el menú contextual del click derecho en todo el sitio */
+  document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+
   /* ------------------------------------------------------------------
      CONFIG — editar aquí (una sola vez)
      ------------------------------------------------------------------ */
