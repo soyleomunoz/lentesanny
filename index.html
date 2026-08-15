@@ -1425,7 +1425,12 @@ h2.section-title{
   if (heroVideo && heroPlayBtn && heroMuteBtn && heroHideTextBtn && heroRestartBtn && heroVideoOffBtn && heroVideoOnBtn){
     /* Los controles solo se muestran si el video de fondo carga con éxito.
        Si falla (o no hay archivo), se ve el degradado de respaldo, sin controles. */
-    function markHeroVideoReady(){ heroSection.classList.add('video-ready'); }
+    function markHeroVideoReady(){
+      heroSection.classList.add('video-ready');
+      /* El video de fondo siempre debe iniciar activo cuando está disponible */
+      heroSection.classList.remove('video-off');
+      if (heroVideo.paused){ heroVideo.play(); }
+    }
     function markHeroVideoUnavailable(){
       heroSection.classList.remove('video-ready');
       heroVideo.style.display = 'none';
