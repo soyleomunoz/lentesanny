@@ -677,7 +677,7 @@ h2.section-title{
 .hero-video-off-btn svg{ width:22px; height:22px; }
 .hero-video-off-btn:hover{ background:var(--dark); }
 .hero-video-off-btn:active{ transform:scale(.94); }
-body.hero-video-ready:not(.hero-video-off) .hero-video-off-btn{ display:flex; }
+body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ display:flex; }
 
 @media (max-width:620px){
   .float-stack{ right:14px; bottom:14px; gap:12px; }
@@ -766,7 +766,7 @@ body.hero-video-ready:not(.hero-video-off) .hero-video-off-btn{ display:flex; }
 }
 </style>
 </head>
-<body>
+<body class="hero-in-view">
 
 <a href="#main" class="skip-link">Saltar al contenido principal</a>
 
@@ -1560,6 +1560,7 @@ body.hero-video-ready:not(.hero-video-off) .hero-video-off-btn{ display:flex; }
     var heroVisible = true;
     var heroVisibilityObserver = new IntersectionObserver(function(entries){
       heroVisible = entries[0].isIntersecting;
+      document.body.classList.toggle('hero-in-view', heroVisible);
     }, { threshold:.4 });
     heroVisibilityObserver.observe(heroSection);
 
