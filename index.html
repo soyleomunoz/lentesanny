@@ -257,6 +257,35 @@ h2.section-title{
 }
 .hero-ctas{ margin-top:36px; display:flex; gap:16px; flex-wrap:wrap; }
 
+.hero-product{
+  position:absolute; right:clamp(10px,1.6vw,32px); left:clamp(10px,1.6vw,32px);
+  top:calc(var(--nav-h) + clamp(190px,24vw,320px)); z-index:2;
+  display:flex; align-items:flex-start; justify-content:flex-end;
+  transition:opacity .45s var(--ease), transform .45s var(--ease);
+  pointer-events:none;
+}
+.hero-product img{
+  width:min(58vw,860px); max-width:100%; height:auto; display:block;
+  filter:drop-shadow(0 28px 56px rgba(0,0,0,.5));
+  animation:heroProductFloat 4.5s ease-in-out infinite;
+  transform-origin:50% 100%;
+}
+@keyframes heroProductFloat{
+  0%, 100%{ transform:translateY(0) rotate(0deg); }
+  50%{ transform:translateY(-16px) rotate(-1.1deg); }
+}
+.hero.text-hidden .hero-product{ opacity:0; transform:translateY(14px) scale(.96); }
+@media (prefers-reduced-motion: reduce){
+  .hero-product img{ animation:none; }
+}
+@media (max-width:900px){
+  .hero{ flex-wrap:wrap; }
+  .hero-product{ position:relative; left:auto; right:auto; top:auto; justify-content:center; margin:32px auto 0; order:2; }
+  .hero-product img{ width:min(70vw,340px); }
+  .hero > .container{ order:1; width:100%; }
+}
+@media (max-width:620px){ .hero-product img{ width:min(62vw,260px); } }
+
 /* Hero video controls bar: solo visibles cuando el video de fondo carga correctamente */
 .hero-controls{
   display:none; height:42px;
@@ -335,9 +364,11 @@ h2.section-title{
 }
 .about-visual img{ width:100%; height:100%; object-fit:cover; opacity:.9; mix-blend-mode:luminosity; }
 .about-visual::after{
-  content:""; position:absolute; inset:0;
+  content:""; position:absolute; inset:0; pointer-events:none;
   background:radial-gradient(circle at 30% 20%, rgba(47,214,208,.4), transparent 55%);
 }
+.about-visual--video iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; }
+.about-visual--video::after{ display:none; }
 .about-badge{
   position:absolute; left:24px; bottom:24px; z-index:2; padding:14px 18px; border-radius:var(--radius-m);
   background:rgba(255,255,255,.92); backdrop-filter:blur(8px); box-shadow:var(--shadow-m);
@@ -452,8 +483,14 @@ h2.section-title{
   aspect-ratio:4/3; background:var(--gray-light); position:relative; display:flex; align-items:center; justify-content:center;
 }
 .product-media svg{ width:64px; height:64px; color:var(--purple); opacity:.85; }
+.product-media img{ width:100%; height:100%; object-fit:cover; }
 .product-card.featured .product-media{ background:linear-gradient(155deg,var(--purple),#241a2c); }
 .product-card.featured .product-media svg{ color:var(--turquoise); }
+.product-card.product-hero{ border-color:var(--turquoise); box-shadow:0 0 0 3px var(--turquoise-light); transform:scale(1.03); z-index:1; }
+.product-card.product-hero:hover{ transform:scale(1.03) translateY(-3px); }
+.product-card.product-hero .product-media{ background:linear-gradient(155deg,var(--turquoise-light),#fff); }
+.product-card.product-hero .product-tag{ background:var(--purple); color:#fff; }
+@media (max-width:900px){ .product-card.product-hero{ transform:none; } .product-card.product-hero:hover{ transform:translateY(-3px); } }
 .product-tag{
   position:absolute; top:14px; left:14px; background:var(--turquoise); color:var(--dark); font-size:11.5px;
   font-weight:700; padding:5px 12px; border-radius:var(--radius-pill); letter-spacing:.03em;
@@ -735,6 +772,7 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
   display:flex; align-items:center; justify-content:center; color:var(--purple);
 }
 .cart-item-thumb svg{ width:26px; height:26px; }
+.cart-item-thumb img{ width:100%; height:100%; object-fit:cover; border-radius:var(--radius-s); }
 .cart-item-info{ flex:1; min-width:0; }
 .cart-item-info h5{ font-size:14.5px; font-weight:600; }
 .cart-item-price{ font-size:13.5px; color:var(--gray-mid); margin-top:4px; }
@@ -782,7 +820,6 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
     <nav class="nav-links" id="navLinks" aria-label="Navegación principal">
       <a href="#que-es">Qué es Anny</a>
       <a href="#funciones">Funciones</a>
-      <a href="#comunidad">Comunidad</a>
       <a href="#productos">Tienda</a>
       <a href="#testimonios">Testimonios</a>
       <a href="#contacto">Contacto</a>
@@ -813,10 +850,13 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
       <source src="assets/video/hero-anny.mp4" type="video/mp4">
     </video>
   </div>
+  <div class="hero-product" id="heroProduct" aria-hidden="true">
+    <img src="assets/img/productos/lentes.png" alt="">
+  </div>
   <div class="container">
     <div class="hero-content" id="heroContent">
       <span class="hero-eyebrow"><span class="dot" aria-hidden="true"></span> Tecnología asistiva con IA</span>
-      <h1>Autonomía al alcance, con <em>Anny</em>.</h1>
+      <h1>Autonomía al alcance,<br>con <em>Anny</em>.</h1>
       <p class="lead">Avanzada inteligencia artificial de asistencia personal que te permite moverte por la ciudad con más confianza e independencia.</p>
       <div class="hero-ctas">
         <a href="#productos" class="btn btn-primary">Comprar Anny</a>
@@ -865,8 +905,8 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
         <p>La propuesta combina lectura de imágenes y texto, detección de obstáculos, asistencia remota con un familiar, GPS accesible y una comunidad colaborativa que releva lugares accesibles.</p>
         <p class="about-quote">Ser autónomos, desarrollarse académicamente, insertarse socialmente y romper las barreras de inclusión laboral es un derecho de todos.</p>
       </div>
-      <div class="about-visual reveal">
-        <img src="https://picsum.photos/seed/anny-lentes-persona/900/1100" alt="Persona usando los lentes inteligentes Anny mientras camina con confianza por una calle de la ciudad.">
+      <div class="about-visual about-visual--video reveal">
+        <iframe src="https://www.youtube-nocookie.com/embed/1jBwJsrEjog" title="Video de Anny, lentes inteligentes de CaecusLab" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
         <div class="about-badge">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 2 3 6v6c0 5 4 8.5 9 10 5-1.5 9-5 9-10V6l-9-4z"/><path d="m9 12 2 2 4-4"/></svg>
           <span><strong>v2.0</strong> Lentes Anny actuales</span>
@@ -946,46 +986,6 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
         <div class="step-num">4</div>
         <h3>Actúas con confianza</h3>
         <p>Decides y te mueves con mayor seguridad, apoyado por Anny y, si lo necesitas, por un familiar.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ==========================================================================
-     COMUNIDAD
-     ========================================================================== -->
-<section class="section section--alt" id="comunidad">
-  <div class="container">
-    <div class="community reveal">
-      <div class="community-content">
-        <span class="eyebrow">Comunidad accesible</span>
-        <h2 class="section-title" style="color:#fff;">Súmate al mapa colaborativo de lugares accesibles</h2>
-        <p>Cada aporte de la comunidad ayuda a identificar rampas, entornos de peligro y sitios de interés turístico en la vía pública, construyendo entre todos una ciudad más accesible.</p>
-        <div class="hero-ctas" style="margin-top:28px;">
-          <a href="#contacto" class="btn btn-primary">Habla con nosotros</a>
-        </div>
-      </div>
-      <div class="community-stats">
-        <div class="stat-card">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 21s-7-4.6-9.5-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 9.5 6c-2.5 4.4-9.5 9-9.5 9z"/></svg>
-          <strong>Lugares accesibles</strong>
-          <span>Rampas y accesos relevados por la comunidad.</span>
-        </div>
-        <div class="stat-card">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 9v4l2.5 2.5"/><circle cx="12" cy="12" r="9"/></svg>
-          <strong>Alertas en tiempo real</strong>
-          <span>Entornos de peligro identificados en la vía pública.</span>
-        </div>
-        <div class="stat-card">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 22s7-6.2 7-12A7 7 0 0 0 5 10c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.4"/></svg>
-          <strong>Interés turístico</strong>
-          <span>Sitios recomendados y accesibles para visitar.</span>
-        </div>
-        <div class="stat-card">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="18" cy="7" r="2.4"/><path d="M14 20c.2-2.4 1.9-4.3 4-4.6"/></svg>
-          <strong>Construida en conjunto</strong>
-          <span>Cada persona usuaria suma información a la comunidad.</span>
-        </div>
       </div>
     </div>
   </div>
@@ -1268,7 +1268,6 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
         <ul>
           <li><a href="#que-es">Qué es Anny</a></li>
           <li><a href="#funciones">Funciones</a></li>
-          <li><a href="#comunidad">Comunidad</a></li>
           <li><a href="#testimonios">Testimonios</a></li>
         </ul>
       </div>
@@ -1378,15 +1377,15 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
   /* ------------------------------------------------------------------
      CONFIG — editar aquí (una sola vez)
      ------------------------------------------------------------------ */
-  var WHATSAPP_PHONE = '56900000000'; // TODO: reemplazar por el número real de CaecusLab
+  var WHATSAPP_PHONE = '5493516016158';
   var WHATSAPP_MESSAGE_DEFAULT = 'Hola, quiero saber más sobre los lentes Anny.';
 
   var PRODUCTS = [
-    { id:'lentes-anny-v2', name:'Lentes Anny v2.0', price:900000, desc:'Lentes inteligentes con IA de asistencia personal: lectura de imágenes, entornos urbanos, asistencia remota, GPS accesible y comunidad.', featured:true, icon:'glasses' },
-    { id:'baston-ambutech', name:'Bastón Blanco Ambutech', price:70000, desc:'Bastón blanco Ambutech para personas ciegas, complemento de movilidad para uso diario.', icon:'cane' },
-    { id:'punta-baston', name:'Punta de bastón', price:30000, desc:'Punta de repuesto para bastón, compatible con los principales modelos de bastón para ciegos.', icon:'tip' },
-    { id:'bolso-transporte', name:'Bolso de transporte', price:20000, desc:'Bolso diseñado para transportar y proteger tus lentes Anny y accesorios.', icon:'bag' },
-    { id:'kit-completo', name:'Kit Completo', price:1200000, desc:'Lentes Anny v2.0 + bastón Ambutech + punta de repuesto + bolso de transporte.', featured:true, icon:'kit' }
+    { id:'lentes-anny-v2', name:'Lentes Anny v2.0', price:900000, desc:'Lentes inteligentes con IA de asistencia personal: lectura de imágenes, entornos urbanos, asistencia remota, GPS accesible y comunidad.', featured:true, icon:'glasses', image:'assets/img/productos/lentes.png' },
+    { id:'baston-ambutech', name:'Bastón Blanco Ambutech', price:70000, desc:'Bastón blanco Ambutech para personas ciegas, complemento de movilidad para uso diario.', icon:'cane', image:'assets/img/productos/baston.webp' },
+    { id:'punta-baston', name:'Punta de bastón', price:30000, desc:'Punta de repuesto para bastón, compatible con los principales modelos de bastón para ciegos.', icon:'tip', image:'assets/img/productos/puntera.webp' },
+    { id:'bolso-transporte', name:'Bolso de transporte', price:20000, desc:'Bolso diseñado para transportar y proteger tus lentes Anny y accesorios.', icon:'bag', image:'assets/img/productos/bolso.webp' },
+    { id:'kit-completo', name:'Kit Completo', price:1200000, desc:'Lentes Anny v2.0 + bastón Ambutech + punta de repuesto + bolso de transporte.', featured:true, icon:'kit', image:'assets/img/productos/kit.webp' }
   ];
 
   var ICONS = {
@@ -1731,11 +1730,11 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
   var productsGrid = document.getElementById('productsGrid');
   PRODUCTS.forEach(function(p){
     var card = document.createElement('article');
-    card.className = 'product-card' + (p.featured ? ' featured' : '');
+    card.className = 'product-card' + (p.featured ? ' featured' : '') + (p.id === 'lentes-anny-v2' ? ' product-hero' : '');
     card.innerHTML =
       '<div class="product-media">' +
         (p.featured ? '<span class="product-tag">' + (p.id === 'kit-completo' ? 'Más completo' : 'Producto estrella') + '</span>' : '') +
-        ICONS[p.icon] +
+        (p.image ? '<img src="' + p.image + '" alt="' + p.name + '" loading="lazy">' : ICONS[p.icon]) +
       '</div>' +
       '<div class="product-body">' +
         '<h3>' + p.name + '</h3>' +
@@ -1825,7 +1824,7 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
       var row = document.createElement('div');
       row.className = 'cart-item';
       row.innerHTML =
-        '<div class="cart-item-thumb">' + ICONS[p.icon] + '</div>' +
+        '<div class="cart-item-thumb">' + (p.image ? '<img src="' + p.image + '" alt="' + p.name + '">' : ICONS[p.icon]) + '</div>' +
         '<div class="cart-item-info">' +
           '<h5>' + p.name + '</h5>' +
           '<div class="cart-item-price">' + CLP.format(p.price) + '</div>' +
