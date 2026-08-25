@@ -374,9 +374,29 @@ h2.section-title{
   content:""; position:absolute; inset:0; pointer-events:none;
   background:radial-gradient(circle at 30% 20%, rgba(47,214,208,.4), transparent 55%);
 }
-.about-visual--video{ aspect-ratio:16/9; background:var(--dark); }
-.about-visual--video iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; }
-.about-visual--video::after{ display:none; }
+.about-visual--lentes{
+  display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(155deg,var(--turquoise-light),#fff);
+}
+.about-visual--lentes::after{ display:none; }
+.about-visual--lentes img{
+  width:74%; height:auto; object-fit:contain; opacity:1; mix-blend-mode:normal;
+  filter:drop-shadow(0 20px 40px rgba(75,46,90,.28));
+  transition:opacity .5s var(--ease);
+}
+.about-visual--lentes.is-filled img{ opacity:1; }
+.about-visual--lentes:not(.is-filled) img{ opacity:0; }
+
+.lentes-flying{
+  position:absolute; top:0; left:0; z-index:60; pointer-events:none;
+  opacity:0; will-change:transform, width, height;
+  filter:drop-shadow(0 24px 48px rgba(0,0,0,.5));
+}
+.lentes-flying.is-active{ opacity:1; }
+@media (prefers-reduced-motion: reduce){
+  .lentes-flying{ display:none; }
+  .about-visual--lentes img{ opacity:1 !important; }
+}
 .about-badge{
   position:absolute; left:24px; bottom:24px; z-index:2; padding:14px 18px; border-radius:var(--radius-m);
   background:rgba(255,255,255,.92); backdrop-filter:blur(8px); box-shadow:var(--shadow-m);
@@ -859,7 +879,7 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
     </div>
   </div>
   <div class="hero-product" id="heroProduct" aria-hidden="true">
-    <img src="assets/img/productos/lentes.png" alt="">
+    <img id="heroProductImg" src="assets/img/productos/lentes.png" alt="">
   </div>
   <div class="container">
     <div class="hero-content" id="heroContent">
@@ -913,8 +933,8 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
         <p>La propuesta combina lectura de imágenes y texto, detección de obstáculos, asistencia remota con un familiar, GPS accesible y una comunidad colaborativa que releva lugares accesibles.</p>
         <p class="about-quote">Ser autónomos, desarrollarse académicamente, insertarse socialmente y romper las barreras de inclusión laboral es un derecho de todos.</p>
       </div>
-      <div class="about-visual about-visual--video reveal">
-        <iframe src="https://www.youtube-nocookie.com/embed/1jBwJsrEjog" title="Video de Anny, lentes inteligentes de CaecusLab" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+      <div class="about-visual about-visual--lentes reveal" id="lentesTarget">
+        <img class="about-visual-static-lentes" src="assets/img/productos/lentes.png" alt="Lentes inteligentes Anny">
       </div>
     </div>
   </div>
@@ -1356,6 +1376,8 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m8 6-6 6 6 6M16 6l6 6-6 6"/></svg>
   <span>Desarrollado por GestixPro</span>
 </a>
+
+<img class="lentes-flying" id="lentesFlying" src="assets/img/productos/lentes.png" alt="" aria-hidden="true">
 
 <div class="float-stack">
   <button class="scrolltop-btn" id="scrollTopBtn" aria-label="Volver arriba">
@@ -2075,6 +2097,138 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
      ------------------------------------------------------------------ */
   document.getElementById('copyrightText').textContent =
     '© ' + new Date().getFullYear() + ' Anny by CaecusLab. Todos los derechos reservados.';
+
+  /* ------------------------------------------------------------------
+     LENTES: viaje de ida y vuelta entre el hero y "Qué es Anny" en un solo
+     movimiento continuo y fluido, disparado cuando el usuario llega a ver
+     cada sección (no escalonado por el scroll). Un resorte crítico (sin
+     rebote) lleva el elemento de un punto a otro, como una transición de
+     foco de Apple; el viaje de vuelta respeta el tamaño original del hero.
+     ------------------------------------------------------------------ */
+  (function lentesTravel(){
+    var prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var heroProductImg = document.getElementById('heroProductImg');
+    var flying = document.getElementById('lentesFlying');
+    var targetBox = document.getElementById('lentesTarget');
+    var targetImg = targetBox ? targetBox.querySelector('img') : null;
+    var queEsSection = document.getElementById('que-es');
+    if (!heroProductImg || !flying || !targetBox || !targetImg || !heroSection || !queEsSection) return;
+
+    if (prefersReducedMotion){
+      targetBox.classList.add('is-filled');
+      return;
+    }
+
+    var TRAVEL_MS = 1400;
+    var atTarget = false;
+    var isAnimating = false;
+
+    function docRect(el){
+      var r = el.getBoundingClientRect();
+      return { top:r.top + window.scrollY, left:r.left + window.scrollX, width:r.width, height:r.height };
+    }
+
+    /* Posición de reposo real del hero, pausando su flotado para medirla sin el desfase del keyframe en curso. */
+    function heroHomeRect(){
+      var prevAnim = heroProductImg.style.animation;
+      heroProductImg.style.animation = 'none';
+      var rect = docRect(heroProductImg);
+      heroProductImg.style.animation = prevAnim;
+      return rect;
+    }
+
+    function placeFlying(top, left, width, height){
+      flying.style.transition = 'none';
+      flying.style.top = top + 'px';
+      flying.style.left = left + 'px';
+      flying.style.width = width + 'px';
+      flying.style.height = height + 'px';
+    }
+
+    function easeInOutCubic(t){
+      return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    }
+
+    /* Centro (x,y) de un rect, usado para trazar la curva de la trayectoria. */
+    function center(rect){ return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }; }
+
+    function travel(fromRect, toRect, onArrive){
+      isAnimating = true;
+      flying.classList.add('is-active');
+
+      var c0 = center(fromRect), c1 = center(toRect);
+      var dx = c1.x - c0.x, dy = c1.y - c0.y;
+      var dist = Math.sqrt(dx * dx + dy * dy) || 1;
+      /* Punto de control perpendicular a la línea recta, para dar una leve curvatura al recorrido. */
+      var curveAmount = Math.min(140, Math.max(36, dist * 0.16));
+      var perpX = -dy / dist, perpY = dx / dist;
+      var controlX = (c0.x + c1.x) / 2 + perpX * curveAmount;
+      var controlY = (c0.y + c1.y) / 2 + perpY * curveAmount;
+
+      var startTime = null;
+      function frame(now){
+        if (startTime === null) startTime = now;
+        var t = Math.min(1, (now - startTime) / TRAVEL_MS);
+        var eased = easeInOutCubic(t);
+        var inv = 1 - eased;
+
+        /* Curva de Bézier cuadrática para el centro del elemento. */
+        var cx = inv * inv * c0.x + 2 * inv * eased * controlX + eased * eased * c1.x;
+        var cy = inv * inv * c0.y + 2 * inv * eased * controlY + eased * eased * c1.y;
+
+        var width = fromRect.width + (toRect.width - fromRect.width) * eased;
+        var height = fromRect.height + (toRect.height - fromRect.height) * eased;
+
+        placeFlying(cy - height / 2, cx - width / 2, width, height);
+
+        if (t < 1){
+          requestAnimationFrame(frame);
+        } else {
+          flying.classList.remove('is-active');
+          isAnimating = false;
+          onArrive();
+        }
+      }
+      placeFlying(fromRect.top, fromRect.left, fromRect.width, fromRect.height);
+      requestAnimationFrame(frame);
+    }
+
+    function travelToTarget(){
+      if (atTarget || isAnimating) return;
+      var startRect = heroHomeRect();
+      var endRect = docRect(targetImg);
+      heroProductImg.style.opacity = '0';
+      travel(startRect, endRect, function(){
+        targetBox.classList.add('is-filled');
+        atTarget = true;
+      });
+    }
+
+    function travelToHero(){
+      if (!atTarget || isAnimating) return;
+      var startRect = docRect(targetImg);
+      var endRect = heroHomeRect();
+      targetBox.classList.remove('is-filled');
+      travel(startRect, endRect, function(){
+        heroProductImg.style.opacity = '';
+        atTarget = false;
+      });
+    }
+
+    var queEsObserver = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting){ travelToTarget(); }
+      });
+    }, { threshold:0.4 });
+    queEsObserver.observe(queEsSection);
+
+    var heroObserver = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting){ travelToHero(); }
+      });
+    }, { threshold:0.6 });
+    heroObserver.observe(heroSection);
+  })();
 
 })();
 </script>
