@@ -184,6 +184,7 @@ h2.section-title{
   position:relative; width:42px; height:42px; border-radius:50%; border:1px solid rgba(255,255,255,.3);
   background:rgba(255,255,255,.06); display:flex; align-items:center; justify-content:center; color:#fff;
   transition:background .2s var(--ease), border-color .2s var(--ease);
+  margin-right:18px;
 }
 .navbar.is-scrolled .cart-btn{ border-color:rgba(255,255,255,.25); color:#fff; background:rgba(255,255,255,.08); }
 .cart-btn:hover{ background:var(--turquoise); border-color:var(--turquoise); color:var(--dark); }
@@ -222,12 +223,10 @@ h2.section-title{
 }
 .hero-video-frame{ position:absolute; inset:0; width:100%; height:100%; overflow:hidden; pointer-events:none; }
 .hero-video-frame iframe{
-  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-  width:177.78vh; height:100vh; min-width:100%; min-height:56.25vw;
-  border:0; pointer-events:none;
-  opacity:0; transition:opacity .5s var(--ease);
+  position:absolute; left:50%; bottom:0; transform:translate(-50%,6vh);
+  width:max(100vw,177.78vh); aspect-ratio:16/9;
+  border:0;
 }
-.hero-video-frame.is-playing iframe{ opacity:1; }
 .hero-fallback{
   background:
     radial-gradient(circle at 18% 22%, rgba(47,214,208,.35), transparent 45%),
@@ -854,9 +853,9 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
 <section class="hero" id="inicio">
   <div class="hero-media" aria-hidden="true">
     <div class="hero-fallback"></div>
-    <!-- Video de fondo servido desde YouTube (sin controles ni marca visible) mediante la API de IFrame. -->
+    <!-- Video de fondo servido desde Vimeo en modo "background" (sin controles, título ni marca en ningún momento). -->
     <div class="hero-video-frame" id="heroVideoFrame">
-      <div id="heroYtPlayer"></div>
+      <iframe id="heroVimeoPlayer" src="https://player.vimeo.com/video/1221009134?background=1&autoplay=1&loop=1&muted=1&autopause=0&app_id=122963" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" title="Video de Anny, lentes inteligentes de CaecusLab"></iframe>
     </div>
   </div>
   <div class="hero-product" id="heroProduct" aria-hidden="true">
@@ -1433,12 +1432,14 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
      ------------------------------------------------------------------ */
   var heroSection = document.getElementById('inicio');
 
-  /* Video de fondo servido desde YouTube (sin marca ni controles nativos) a través
-     de la IFrame API. Este objeto "heroVideo" imita la API mínima de <video> que ya
-     usan los controles de esta sección, para no reescribir el resto de la lógica. */
-  var HERO_YT_VIDEO_ID = '1jBwJsrEjog';
-  var heroVideoFrameEl = document.getElementById('heroVideoFrame');
-  var heroYtPlayer = null;
+  /* Video de fondo servido desde Vimeo (modo "background": sin controles, título,
+     marca ni subtítulos en ningún momento) a través de la Vimeo Player API. Este
+     objeto "heroVideo" imita la API mínima de <video> que ya usan los controles de
+     esta sección, para no reescribir el resto de la lógica. */
+  var heroVimeoFrameEl = document.getElementById('heroVideoFrame');
+  var heroVimeoIframeEl = document.getElementById('heroVimeoPlayer');
+  var heroVimeoPlayer = null;
+  var heroVimeoReady = false;
   var heroVideoListeners = {};
   var heroVideoState = { paused:true, muted:true };
 
@@ -1447,69 +1448,48 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
   }
 
   var heroVideo = {
-    style: heroVideoFrameEl.style,
+    style: heroVimeoFrameEl.style,
     get paused(){ return heroVideoState.paused; },
     get muted(){ return heroVideoState.muted; },
     set muted(v){
       heroVideoState.muted = v;
-      if (heroYtPlayer){ v ? heroYtPlayer.mute() : heroYtPlayer.unMute(); }
+      if (heroVimeoPlayer){ heroVimeoPlayer.setMuted(v); }
     },
-    set currentTime(v){ if (heroYtPlayer){ heroYtPlayer.seekTo(v || 0, true); } },
-    get readyState(){ return heroYtPlayer ? 2 : 0; },
-    play: function(){ if (heroYtPlayer && heroYtPlayer.playVideo){ heroYtPlayer.playVideo(); } },
-    pause: function(){ if (heroYtPlayer && heroYtPlayer.pauseVideo){ heroYtPlayer.pauseVideo(); } },
+    set currentTime(v){ if (heroVimeoPlayer){ heroVimeoPlayer.setCurrentTime(v || 0); } },
+    get readyState(){ return heroVimeoReady ? 2 : 0; },
+    play: function(){ if (heroVimeoPlayer){ heroVimeoPlayer.play(); } },
+    pause: function(){ if (heroVimeoPlayer){ heroVimeoPlayer.pause(); } },
     addEventListener: function(evt, cb){
       (heroVideoListeners[evt] = heroVideoListeners[evt] || []).push(cb);
     },
     querySelectorAll: function(){ return []; }
   };
 
-  (function loadHeroYouTubePlayer(){
+  (function loadHeroVimeoPlayer(){
     function createPlayer(){
-      heroYtPlayer = new YT.Player('heroYtPlayer', {
-        videoId: HERO_YT_VIDEO_ID,
-        playerVars: {
-          autoplay:1, mute:1, loop:1, playlist:HERO_YT_VIDEO_ID,
-          controls:0, disablekb:1, fs:0, iv_load_policy:3, cc_load_policy:0,
-          modestbranding:1, playsinline:1, rel:0, showinfo:0,
-          origin: window.location.origin
-        },
-        events:{
-          onReady: function(e){
-            e.target.mute();
-            if (typeof e.target.setOption === 'function'){
-              e.target.setOption('captions', 'reload', false);
-            }
-            e.target.playVideo();
-            heroVideoEmit('loadeddata');
-            heroVideoEmit('canplay');
-          },
-          onStateChange: function(e){
-            if (e.data === YT.PlayerState.PLAYING){
-              heroVideoState.paused = false;
-              heroVideoFrameEl.classList.add('is-playing');
-              heroVideoEmit('playing');
-              heroVideoEmit('play');
-            } else if (e.data === YT.PlayerState.PAUSED){
-              heroVideoState.paused = true;
-              heroVideoEmit('pause');
-            } else if (e.data === YT.PlayerState.ENDED){
-              e.target.seekTo(0, true);
-              e.target.playVideo();
-            }
-          },
-          onError: function(){ heroVideoEmit('error'); }
-        }
+      heroVimeoPlayer = new Vimeo.Player(heroVimeoIframeEl);
+      heroVimeoPlayer.setMuted(true);
+      heroVimeoPlayer.on('loaded', function(){
+        heroVimeoReady = true;
+        heroVideoEmit('loadeddata');
+        heroVideoEmit('canplay');
       });
+      heroVimeoPlayer.on('play', function(){
+        heroVideoState.paused = false;
+        heroVideoEmit('playing');
+        heroVideoEmit('play');
+      });
+      heroVimeoPlayer.on('pause', function(){
+        heroVideoState.paused = true;
+        heroVideoEmit('pause');
+      });
+      heroVimeoPlayer.on('error', function(){ heroVideoEmit('error'); });
     }
-    if (window.YT && window.YT.Player){ createPlayer(); return; }
-    var previousReady = window.onYouTubeIframeAPIReady;
-    window.onYouTubeIframeAPIReady = function(){
-      if (typeof previousReady === 'function') previousReady();
-      createPlayer();
-    };
+    if (window.Vimeo && window.Vimeo.Player){ createPlayer(); return; }
     var tag = document.createElement('script');
-    tag.src = 'https://www.youtube.com/iframe_api';
+    tag.src = 'https://player.vimeo.com/api/player.js';
+    tag.onload = createPlayer;
+    tag.onerror = function(){ heroVideoEmit('error'); };
     document.head.appendChild(tag);
   })();
 
@@ -1660,6 +1640,8 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
         if (e.key === 'Enter'){
           e.preventDefault();
           heroVideoOnBtn.click();
+        } else if (e.key === 'f' || e.key === 'F'){
+          heroVideoOnBtn.click();
         }
         return;
       }
@@ -1684,6 +1666,16 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
       if (e.key === 'Escape' && !heroSection.classList.contains('text-hidden') && !heroVideo.muted){
         setHeroMuted(true);
         resetControlsIdleTimer();
+        return;
+      }
+
+      if (e.key === 'm' || e.key === 'M'){
+        heroMuteBtn.click();
+        return;
+      }
+
+      if (e.key === 'f' || e.key === 'F'){
+        heroVideoOffBtn.click();
         return;
       }
 
