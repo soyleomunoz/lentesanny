@@ -382,7 +382,6 @@ h2.section-title{
 .about-visual--lentes img{
   width:74%; height:auto; object-fit:contain; opacity:1; mix-blend-mode:normal;
   filter:drop-shadow(0 20px 40px rgba(75,46,90,.28));
-  transition:opacity .5s var(--ease);
 }
 .about-visual--lentes.is-filled img{ opacity:1; }
 .about-visual--lentes:not(.is-filled) img{ opacity:0; }
@@ -2195,9 +2194,11 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
 
     function travelToTarget(){
       if (atTarget || isAnimating) return;
+      /* Se oculta primero la imagen real del hero para que la pausa/reanudación
+         de su animación de flotado (dentro de heroHomeRect) no se llegue a ver. */
+      heroProductImg.style.opacity = '0';
       var startRect = heroHomeRect();
       var endRect = docRect(targetImg);
-      heroProductImg.style.opacity = '0';
       travel(startRect, endRect, function(){
         targetBox.classList.add('is-filled');
         atTarget = true;
