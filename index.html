@@ -360,6 +360,7 @@ h2.section-title{
 .about-grid{
   display:grid; grid-template-columns:1.1fr .9fr; gap:64px; align-items:center;
 }
+.about-copy{ max-width:760px; }
 .about-copy p{ color:var(--gray-mid); font-size:17px; margin-top:18px; max-width:56ch; }
 .about-quote{
   margin-top:28px; padding-left:20px; border-left:3px solid var(--turquoise); font-weight:600;
@@ -374,27 +375,144 @@ h2.section-title{
   content:""; position:absolute; inset:0; pointer-events:none;
   background:radial-gradient(circle at 30% 20%, rgba(47,214,208,.4), transparent 55%);
 }
+/* Tarjeta "Qué es Anny": los lentes son el protagonista al centro y los 4
+   componentes orbitan a su alrededor en sentido horario, a ritmo constante.
+   El detalle de cada uno se lee en un panel anclado al pie de la tarjeta,
+   para que nada se superponga nunca a los lentes. */
 .about-visual--lentes{
-  display:flex; align-items:center; justify-content:center;
   background:linear-gradient(155deg,var(--turquoise-light),#fff);
 }
 .about-visual--lentes::after{ display:none; }
-.about-visual--lentes img{
-  width:74%; height:auto; object-fit:contain; opacity:1; mix-blend-mode:normal;
-  filter:drop-shadow(0 20px 40px rgba(75,46,90,.28));
+
+/* Escenario: ocupa la parte superior y reserva el pie para el panel de texto. */
+.lentes-stage{
+  position:absolute; left:50%; top:42%; transform:translate(-50%,-50%);
+  width:100%; aspect-ratio:1/1;
 }
-.about-visual--lentes.is-filled img{ opacity:1; }
-.about-visual--lentes:not(.is-filled) img{ opacity:0; }
+/* lentes.png lleva ~23% de margen transparente a cada lado: el lente visible
+   ocupa sólo el 54,4% del ancho del archivo. Dimensionamos contra esa fracción
+   para razonar en "lente visible" y no en "caja"; lo que sobresale de la
+   tarjeta es transparente y el overflow:hidden lo absorbe. */
+.about-visual--lentes{ --lentes-art:.544; }
+.about-visual--lentes .about-visual-static-lentes{
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  z-index:2; width:calc(68% / var(--lentes-art)); max-width:none; height:auto;
+  opacity:1; mix-blend-mode:normal;
+  /* Decorativo: su caja es más ancha que la tarjeta y taparía el hover de las
+     fotos que pasan por detrás. Sin esto no se pueden apuntar en esa mitad. */
+  pointer-events:none;
+  filter:drop-shadow(0 22px 44px rgba(75,46,90,.3));
+  transition:opacity .4s var(--ease);
+}
+.about-visual--lentes:not(.is-filled) .about-visual-static-lentes{ opacity:0; }
+
+/* Órbita: un anillo cuadrado por componente, girando con el mismo periodo y
+   desfasado un cuarto de vuelta mediante animation-delay negativo.
+   El z-index vive en el anillo (su transform crea el contexto de apilado),
+   de modo que la mitad derecha del recorrido pasa por detrás de los lentes
+   y la izquierda por delante. */
+.lentes-orbit{
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  width:72%; aspect-ratio:1/1;
+}
+.lentes-ring{
+  position:absolute; inset:0; pointer-events:none; will-change:transform;
+  animation:lentes-orbit 48s linear infinite;
+  animation-delay:calc(var(--i) * -12s);
+}
+.lentes-dot{
+  /* Centrado sobre la circunferencia del anillo, no colgando de su borde. */
+  position:absolute; left:50%; top:0;
+  width:30%; aspect-ratio:1/1; padding:0;
+  border:3px solid var(--turquoise); border-radius:50%;
+  background:#fff; cursor:pointer; pointer-events:auto;
+  box-shadow:0 8px 22px rgba(75,46,90,.22); outline-offset:4px;
+  will-change:transform, filter;
+  /* Contrarresta el giro del anillo (la foto nunca se ve cabeza abajo) y
+     aplica la perspectiva: crece al acercarse, se achica al alejarse. */
+  animation:lentes-orbit-counter 48s linear infinite;
+  animation-delay:calc(var(--i) * -12s);
+  /* `scale` es independiente de `transform`, así no pisa la animación de órbita. */
+  scale:.88; opacity:0;
+  transition:scale .32s var(--ease), opacity .32s var(--ease), box-shadow .25s var(--ease);
+}
+.about-visual--lentes.in .lentes-dot{
+  scale:1; opacity:1;
+  transition-delay:calc(var(--i) * 70ms);
+}
+.lentes-dot img{
+  width:100%; height:100%; border-radius:50%; object-fit:cover;
+  opacity:1; mix-blend-mode:normal; display:block;
+}
+@media (hover:hover) and (pointer:fine){
+  .about-visual--lentes.in .lentes-dot:hover{
+    scale:1.08; box-shadow:0 14px 32px rgba(75,46,90,.34); transition-delay:0ms;
+  }
+}
+.about-visual--lentes.in .lentes-dot:focus-visible,
+.about-visual--lentes.in .lentes-dot[aria-expanded="true"]{
+  scale:1.08; box-shadow:0 14px 32px rgba(75,46,90,.34); transition-delay:0ms;
+}
+.lentes-dot:active{ scale:1.02; }
+
+/* Al leer un componente se detiene la órbita: el usuario no persigue el dato. */
+.about-visual--lentes.is-reading .lentes-ring,
+.about-visual--lentes.is-reading .lentes-dot{ animation-play-state:paused; }
+
+/* 0% = arriba. 0–50% recorre la mitad derecha (detrás de los lentes),
+   50–100% la mitad izquierda (por delante). Los saltos de z-index se hacen
+   en el punto más alto y más bajo del recorrido, donde no hay solape. */
+@keyframes lentes-orbit{
+  0%     { transform:rotate(0deg);    z-index:1; }
+  49.99% { transform:rotate(180deg);  z-index:1; }
+  50%    { transform:rotate(180deg);  z-index:3; }
+  99.99% { transform:rotate(359.9deg); z-index:3; }
+  100%   { transform:rotate(360deg);  z-index:1; }
+}
+/* La contra-rotación mantiene la foto derecha. El tamaño es constante en todo
+   el recorrido; la profundidad la dan el orden de apilado y un brillo apenas
+   más bajo en la mitad que pasa por detrás. */
+@keyframes lentes-orbit-counter{
+  0%   { transform:translate(-50%,-50%) rotate(0deg);    filter:brightness(1); }
+  25%  { transform:translate(-50%,-50%) rotate(-90deg);  filter:brightness(.95); }
+  50%  { transform:translate(-50%,-50%) rotate(-180deg); filter:brightness(1); }
+  75%  { transform:translate(-50%,-50%) rotate(-270deg); filter:brightness(1); }
+  100% { transform:translate(-50%,-50%) rotate(-360deg); filter:brightness(1); }
+}
+
+/* Panel de lectura, siempre al pie y nunca sobre los lentes. */
+.lentes-tip{
+  position:absolute; z-index:5; left:16px; right:16px; bottom:16px;
+  padding:14px 16px; border-radius:var(--radius-m);
+  background:rgba(255,255,255,.97); backdrop-filter:blur(8px);
+  box-shadow:0 16px 40px rgba(75,46,90,.24);
+  font-size:13.5px; line-height:1.5; color:var(--gray-mid); text-align:left;
+  opacity:0; transform:translateY(8px); pointer-events:none;
+  transition:opacity .2s var(--ease), transform .2s var(--ease);
+}
+.lentes-tip strong{ display:block; color:var(--dark); margin-bottom:2px; }
+.about-visual--lentes.is-reading .lentes-tip{ opacity:1; transform:translateY(0); }
+
+@media (prefers-reduced-motion: reduce){
+  .lentes-ring, .lentes-dot{ animation:none; }
+  .lentes-ring{ transform:rotate(calc(var(--i) * 90deg)); z-index:3; }
+  .lentes-ring:nth-child(2){ z-index:1; }
+  .lentes-dot{ transform:translate(-50%,-50%) rotate(calc(var(--i) * -90deg)); }
+}
 
 .lentes-flying{
   position:absolute; top:0; left:0; z-index:60; pointer-events:none;
+  /* El JS fija el ancho en px; sin esto el max-width global lo recortaría
+     al llegar a la tarjeta, donde la caja del PNG supera el 100%. */
+  max-width:none;
   opacity:0; will-change:transform, width, height;
   filter:drop-shadow(0 24px 48px rgba(0,0,0,.5));
 }
 .lentes-flying.is-active{ opacity:1; }
 @media (prefers-reduced-motion: reduce){
   .lentes-flying{ display:none; }
-  .about-visual--lentes img{ opacity:1 !important; }
+  .about-visual--lentes .about-visual-static-lentes{ opacity:1 !important; }
+  .about-visual--lentes .lentes-dot{ opacity:1; scale:1; }
 }
 .about-badge{
   position:absolute; left:24px; bottom:24px; z-index:2; padding:14px 18px; border-radius:var(--radius-m);
@@ -408,6 +526,19 @@ h2.section-title{
 @media (max-width:900px){
   .about-grid{ grid-template-columns:1fr; gap:36px; }
   .about-visual{ order:-1; aspect-ratio:16/10; }
+  .about-visual--lentes{ order:-1; aspect-ratio:1/1; width:100%; max-width:460px; margin:0 auto; }
+  .lentes-stage{ top:48%; }
+  .lentes-orbit{ width:70%; }
+  .about-visual--lentes .about-visual-static-lentes{ width:calc(64% / var(--lentes-art)); }
+  .lentes-tip{ left:12px; right:12px; bottom:12px; font-size:13px; padding:12px 14px; }
+}
+/* En pantallas angostas el panel ocupa proporcionalmente más alto: se sube la
+   órbita para que el texto siga cayendo por debajo de todo. */
+@media (max-width:520px){
+  .lentes-stage{ top:47%; }
+  .lentes-orbit{ width:68%; }
+  .about-visual--lentes .about-visual-static-lentes{ width:calc(62% / var(--lentes-art)); }
+  .lentes-tip{ left:10px; right:10px; bottom:10px; font-size:12.5px; padding:11px 13px; }
 }
 
 /* ==========================================================================
@@ -579,7 +710,7 @@ h2.section-title{
 /* ==========================================================================
    FAQ
    ========================================================================== */
-.faq-list{ margin-top:48px; max-width:820px; }
+.faq-list{ margin-top:48px; max-width:820px; margin-left:auto; margin-right:auto; }
 .faq-item{ border-bottom:1px solid var(--border); }
 .faq-q{
   width:100%; display:flex; align-items:center; justify-content:space-between; gap:20px;
@@ -588,7 +719,7 @@ h2.section-title{
 .faq-q svg{ width:20px; height:20px; flex:none; transition:transform .3s var(--ease); color:var(--purple); }
 .faq-item[aria-expanded="true"] .faq-q svg{ transform:rotate(45deg); }
 .faq-a{ max-height:0; overflow:hidden; transition:max-height .35s var(--ease); }
-.faq-a-inner{ padding:0 0 22px; color:var(--gray-mid); font-size:15.5px; max-width:70ch; }
+.faq-a-inner{ padding:0 0 22px; color:var(--gray-mid); font-size:15.5px; }
 
 /* ==========================================================================
    CONTACTO
@@ -672,8 +803,8 @@ h2.section-title{
 .footer-col ul li a{ color:#D6D5DC; font-size:14.5px; transition:color .2s var(--ease); }
 .footer-col ul li a:hover{ color:var(--turquoise); }
 .anid-strip{
-  border-top:1px solid rgba(255,255,255,.1); padding:24px 0; display:flex; align-items:center; gap:16px;
-  color:#8C8A98; font-size:13px;
+  border-top:1px solid rgba(255,255,255,.1); padding:24px 0; display:flex; align-items:center; justify-content:center; gap:16px;
+  color:#8C8A98; font-size:13px; text-align:center;
 }
 .anid-strip svg{ width:22px; height:22px; color:var(--turquoise); flex:none; }
 .footer-bottom{
@@ -932,8 +1063,48 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
         <p>La propuesta combina lectura de imágenes y texto, detección de obstáculos, asistencia remota con un familiar, GPS accesible y una comunidad colaborativa que releva lugares accesibles.</p>
         <p class="about-quote">Ser autónomos, desarrollarse académicamente, insertarse socialmente y romper las barreras de inclusión laboral es un derecho de todos.</p>
       </div>
+
       <div class="about-visual about-visual--lentes reveal" id="lentesTarget">
-        <img class="about-visual-static-lentes" src="assets/img/productos/lentes.png" alt="Lentes inteligentes Anny">
+        <div class="lentes-stage">
+          <img class="about-visual-static-lentes" src="assets/img/productos/lentes.png" alt="Lentes inteligentes Anny">
+
+          <div class="lentes-orbit" id="lentesOrbit">
+            <div class="lentes-ring" style="--i:0">
+              <button class="lentes-dot" type="button" aria-expanded="false"
+                      data-title="Botones"
+                      data-text="uno enciende y apaga los sensores y otro enciende el micrófono para el reconocedor de voz.">
+                <img src="assets/img/que-es/botones.webp" alt="" aria-hidden="true">
+                <span class="sr-only">Botones: uno enciende y apaga los sensores y otro enciende el micrófono para el reconocedor de voz.</span>
+              </button>
+            </div>
+            <div class="lentes-ring" style="--i:1">
+              <button class="lentes-dot" type="button" aria-expanded="false"
+                      data-title="Sensores y motores vibradores"
+                      data-text="detectan objetos a la altura de los hombros y el rostro, produciendo vibraciones en las patillas del lente.">
+                <img src="assets/img/que-es/sensores.webp" alt="" aria-hidden="true">
+                <span class="sr-only">Sensores y motores vibradores: detectan objetos a la altura de los hombros y el rostro, produciendo vibraciones en las patillas del lente.</span>
+              </button>
+            </div>
+            <div class="lentes-ring" style="--i:2">
+              <button class="lentes-dot" type="button" aria-expanded="false"
+                      data-title="Micrófono y parlantes"
+                      data-text="permiten realizar comandos de voz, escuchar indicaciones de la guía GPS o de un tutor durante una Ayuda.">
+                <img src="assets/img/que-es/microfono.webp" alt="" aria-hidden="true">
+                <span class="sr-only">Micrófono y parlantes: permiten realizar comandos de voz, escuchar indicaciones de la guía GPS o de un tutor durante una Ayuda.</span>
+              </button>
+            </div>
+            <div class="lentes-ring" style="--i:3">
+              <button class="lentes-dot" type="button" aria-expanded="false"
+                      data-title="Cámara"
+                      data-text="permite que un tutor elegido por el usuario ingrese a la cámara para resolver una situación de manera conjunta; también permite la detección e identificación de objetos en tiempo real.">
+                <img src="assets/img/que-es/camara.webp" alt="" aria-hidden="true">
+                <span class="sr-only">Cámara: permite que un tutor elegido por el usuario ingrese a la cámara para resolver una situación de manera conjunta; también permite la detección e identificación de objetos en tiempo real.</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <p class="lentes-tip" id="lentesTip" aria-hidden="true"></p>
       </div>
     </div>
   </div>
@@ -1083,7 +1254,6 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
   <div class="container">
     <span class="eyebrow">Validación y respaldo</span>
     <h2 class="section-title">Fuimos validados y premiados por</h2>
-  </div>
   <div class="trust-marquee-wrap" aria-label="Instituciones que validaron y premiaron el proyecto Anny">
     <div class="trust-marquee" aria-hidden="true">
       <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m5 13 4 4L19 7"/></svg>Congreso de la Nación Argentina</span>
@@ -1117,7 +1287,6 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
       <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m5 13 4 4L19 7"/></svg>JB</span>
     </div>
   </div>
-  <div class="container">
     <p class="anid-note">Proyecto respaldado por ANID, Agencia Nacional de Investigación y Desarrollo de Chile (ver pie de página).</p>
   </div>
 </section>
@@ -2109,7 +2278,7 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
     var heroProductImg = document.getElementById('heroProductImg');
     var flying = document.getElementById('lentesFlying');
     var targetBox = document.getElementById('lentesTarget');
-    var targetImg = targetBox ? targetBox.querySelector('img') : null;
+    var targetImg = targetBox ? targetBox.querySelector('.about-visual-static-lentes') : null;
     var queEsSection = document.getElementById('que-es');
     if (!heroProductImg || !flying || !targetBox || !targetImg || !heroSection || !queEsSection) return;
 
@@ -2121,6 +2290,7 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
     var TRAVEL_MS = 1400;
     var atTarget = false;
     var isAnimating = false;
+    var wantTarget = false;
 
     function docRect(el){
       var r = el.getBoundingClientRect();
@@ -2186,6 +2356,7 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
           flying.classList.remove('is-active');
           isAnimating = false;
           onArrive();
+          sync();
         }
       }
       placeFlying(fromRect.top, fromRect.left, fromRect.width, fromRect.height);
@@ -2216,19 +2387,104 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
       });
     }
 
+    /* Reconcilia el estado real con el deseado: garantiza que, al volver a
+       "Qué es Anny" por cualquier camino, los lentes terminen visibles ahí
+       (y que en el hero vuelva su imagen original), incluso si una animación
+       anterior quedó interrumpida por un scroll rápido. */
+    function sync(){
+      if (isAnimating) return;
+      if (wantTarget){
+        if (atTarget){
+          targetBox.classList.add('is-filled');
+          heroProductImg.style.opacity = '0';
+        } else {
+          travelToTarget();
+        }
+      } else {
+        if (atTarget){
+          travelToHero();
+        } else {
+          targetBox.classList.remove('is-filled');
+          heroProductImg.style.opacity = '';
+        }
+      }
+    }
+
     var queEsObserver = new IntersectionObserver(function(entries){
       entries.forEach(function(entry){
-        if (entry.isIntersecting){ travelToTarget(); }
+        if (entry.isIntersecting){ wantTarget = true; sync(); }
       });
     }, { threshold:0.4 });
     queEsObserver.observe(queEsSection);
 
     var heroObserver = new IntersectionObserver(function(entries){
       entries.forEach(function(entry){
-        if (entry.isIntersecting){ travelToHero(); }
+        if (entry.isIntersecting){ wantTarget = false; sync(); }
       });
     }, { threshold:0.6 });
     heroObserver.observe(heroSection);
+  })();
+
+  /* ------------------------------------------------------------------
+     ORBITA DE COMPONENTES: al apuntar (o tocar) uno de los cuatro
+     componentes se detiene el giro y su detalle se lee en el panel al pie
+     de la tarjeta, nunca sobre los lentes. El click deja el panel fijo
+     hasta volver a tocarlo o salir de la tarjeta.
+     ------------------------------------------------------------------ */
+  (function lentesOrbit(){
+    var card = document.getElementById('lentesTarget');
+    var tip = document.getElementById('lentesTip');
+    if (!card || !tip) return;
+
+    var dots = [].slice.call(card.querySelectorAll('.lentes-dot'));
+    if (!dots.length) return;
+
+    var locked = null;   /* componente fijado con click */
+    var hovered = null;  /* componente bajo el cursor */
+
+    function render(){
+      var active = locked || hovered;
+      dots.forEach(function(dot){
+        dot.setAttribute('aria-expanded', dot === active ? 'true' : 'false');
+      });
+      if (!active){
+        card.classList.remove('is-reading');
+        return;
+      }
+      /* El texto se reemplaza sólo cuando cambia, para no reiniciar la transición. */
+      if (tip.dataset.current !== active.dataset.title){
+        tip.dataset.current = active.dataset.title;
+        tip.innerHTML = '<strong></strong>';
+        tip.firstChild.textContent = active.dataset.title;
+        tip.appendChild(document.createTextNode(active.dataset.text));
+      }
+      card.classList.add('is-reading');
+    }
+
+    dots.forEach(function(dot){
+      dot.addEventListener('pointerenter', function(){ hovered = dot; render(); });
+      dot.addEventListener('pointerleave', function(){
+        if (hovered === dot) hovered = null;
+        render();
+      });
+      dot.addEventListener('focus', function(){ hovered = dot; render(); });
+      dot.addEventListener('blur', function(){
+        if (hovered === dot) hovered = null;
+        render();
+      });
+      dot.addEventListener('click', function(){
+        locked = (locked === dot) ? null : dot;
+        render();
+      });
+    });
+
+    /* Al salir de la tarjeta se suelta lo fijado y la órbita retoma su ritmo. */
+    card.addEventListener('pointerleave', function(){
+      locked = null; hovered = null; render();
+    });
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape' && locked){ locked = null; render(); }
+    });
   })();
 
 })();
