@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Anny by CaecusLab — Lentes inteligentes con IA para autonomía visual</title>
-<meta name="description" content="Anny es un dispositivo en formato de lentes inteligentes que, mediante inteligencia artificial, ayuda a personas con discapacidad visual a moverse con mayor confianza e independencia. Autonomía al alcance.">
+<title>Comprar Lentes Anny | Lentes inteligentes con IA — CaecusLab Chile</title>
+<meta name="description" content="Compra los lentes inteligentes Anny, el Kit Completo y accesorios de movilidad. Con inteligencia artificial, Anny ayuda a personas con discapacidad visual a moverse con mayor confianza e independencia. Precios en pesos chilenos.">
 <meta name="keywords" content="lentes inteligentes, discapacidad visual, inteligencia artificial, tecnología asistiva, CaecusLab, Anny, accesibilidad">
 <link rel="canonical" href="https://lentesanny.cl/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Anny by CaecusLab — Autonomía al alcance">
-<meta property="og:description" content="Lentes inteligentes con inteligencia artificial que ayudan a personas con discapacidad visual a moverse con confianza e independencia.">
+<meta property="og:description" content="Compra los lentes inteligentes Anny y sus accesorios. Inteligencia artificial que ayuda a personas con discapacidad visual a moverse con confianza e independencia.">
 <meta property="og:url" content="https://lentesanny.cl/">
 <meta property="og:locale" content="es_CL">
 <meta property="og:site_name" content="Anny by CaecusLab">
@@ -38,6 +38,7 @@
   --purple-light:#EFEAF4;
   --turquoise:#2FD6D0;
   --turquoise-light:#D8F7F5;
+  --turquoise-soft:#93DEDA;   /* turquesa apagado, para resaltar sin competir */
   --white:#FFFFFF;
   --gray-light:#F4F5F7;
   --surface-alt:#F3F1F6;
@@ -74,6 +75,36 @@ body.a11y-light-bg, body.a11y-light-bg *{
   background-color:#fff !important; color:#111 !important;
 }
 body.a11y-underline-links a{ text-decoration: underline !important; }
+/* --------------------------------------------------------------------------
+   REDUCIR MOVIMIENTO (control en pantalla)
+   Duplica lo que ya hace @media (prefers-reduced-motion: reduce), pero
+   accionable desde el panel de accesibilidad: el ajuste del sistema esta
+   escondido en la configuracion del dispositivo y aqui hace falta a mano
+   (WCAG 2.2.2, contenido en movimiento que arranca solo y no se detiene).
+   -------------------------------------------------------------------------- */
+html.a11y-reduce-motion{ scroll-behavior:auto; }
+html.a11y-reduce-motion *,
+html.a11y-reduce-motion *::before,
+html.a11y-reduce-motion *::after{
+  animation-duration:.001ms !important; animation-iteration-count:1 !important;
+  transition-duration:.001ms !important; scroll-behavior:auto !important;
+}
+html.a11y-reduce-motion .hero-product img{ animation:none; }
+html.a11y-reduce-motion .trust-marquee{ animation:none; }
+html.a11y-reduce-motion .whatsapp-btn::before{ animation:none; }
+html.a11y-reduce-motion .reveal{ opacity:1; transform:none; transition:none; }
+/* La orbita se detiene y reparte sus cuatro componentes en posiciones fijas. */
+html.a11y-reduce-motion .lentes-ring,
+html.a11y-reduce-motion .lentes-dot{ animation:none; }
+html.a11y-reduce-motion .lentes-ring{ transform:rotate(calc(var(--i) * 90deg)); z-index:3; }
+html.a11y-reduce-motion .lentes-ring:nth-child(2){ z-index:1; }
+html.a11y-reduce-motion .lentes-dot{ transform:translate(-50%,-50%) rotate(calc(var(--i) * -90deg)); opacity:1; scale:1; }
+html.a11y-reduce-motion .lentes-dot-label{ opacity:1; transform:translateX(-50%); }
+html.a11y-reduce-motion .lentes-flying{ display:none; }
+html.a11y-reduce-motion .about-visual--lentes .about-visual-static-lentes{ opacity:1 !important; }
+/* La barra de compra aparece sin deslizarse. */
+html.a11y-reduce-motion .buybar{ transition:none; }
+
 body.a11y-readable-font, body.a11y-readable-font *{
   font-family: Arial, Helvetica, sans-serif !important; letter-spacing: .01em !important;
 }
@@ -129,6 +160,28 @@ h1,h2,h3,h4,p{ margin:0; }
   text-transform:uppercase; color:var(--purple); margin-bottom:14px;
 }
 .section--dark .eyebrow{ color:var(--turquoise); }
+/* La tienda lleva un eyebrow con chapa, para que se lea como la seccion principal. */
+.eyebrow--shop{
+  background:var(--turquoise-light); color:#14776f; border:1px solid rgba(47,214,208,.4);
+  padding:6px 14px; border-radius:var(--radius-pill); letter-spacing:.1em;
+}
+/* Cinta de acceso rapido a la tienda en el pie. */
+.footer-shop-cta{
+  display:inline-flex; align-items:center; gap:9px; margin-top:22px;
+  padding:12px 22px; border-radius:var(--radius-pill);
+  background:var(--turquoise); color:var(--dark) !important; font-weight:700; font-size:14.5px;
+  transition:background .2s var(--ease), box-shadow .25s var(--ease), transform .15s var(--ease);
+}
+.footer-shop-cta svg{ width:17px; height:17px; flex:none; }
+.footer-shop-cta:hover{ background:#25c2bd; box-shadow:var(--glow); transform:translateY(-1px); }
+.footer-col--shop h4{ color:var(--turquoise-soft); }
+/* Realce suave de la tienda dentro de la lista del pie. */
+.footer-col ul li a.footer-shop-link{
+  display:inline-block; padding:3px 11px; margin-left:-11px; border-radius:var(--radius-pill);
+  background:rgba(47,214,208,.13); color:var(--turquoise-soft); font-weight:700;
+  transition:background .2s var(--ease), color .2s var(--ease);
+}
+.footer-col ul li a.footer-shop-link:hover{ background:rgba(47,214,208,.24); color:var(--turquoise); }
 
 h2.section-title{
   font-size:clamp(28px,4vw,42px); font-weight:700; letter-spacing:-.02em; line-height:1.12;
@@ -187,6 +240,14 @@ p{ text-wrap:pretty; }
 .nav-links a:hover::after, .nav-links a:focus-visible::after, .nav-links a.is-active::after{ transform:scaleX(1); }
 .nav-links a.is-active{ color:#fff; }
 
+/* La tienda es el objetivo principal del sitio: sigue siendo un enlace mas del
+   menu, pero resaltado con un turquesa apagado para que destaque sin gritar. */
+.nav-shop{
+  color:var(--turquoise-soft) !important; font-weight:700;
+}
+.nav-shop::after{ background:var(--turquoise-soft); }
+.nav-shop:hover, .nav-shop:focus-visible{ color:var(--turquoise) !important; }
+
 .nav-actions{ display:flex; align-items:center; gap:14px; }
 
 .cart-btn{
@@ -216,6 +277,10 @@ p{ text-wrap:pretty; }
   }
   .nav-links.is-open{ transform:translateX(0); }
   .nav-links a{ color:var(--dark); width:100%; padding:14px 0; border-bottom:1px solid var(--border); font-size:17px; }
+  /* En el panel movil el fondo es claro: se conserva la familia turquesa,
+     con un tono mas profundo para que el texto siga siendo legible. */
+  .nav-links a.nav-shop{ color:#14776F !important; font-weight:700; }
+  .nav-links a.nav-shop::after{ display:none; }
   .nav-toggle{ display:flex; }
 }
 
@@ -272,6 +337,9 @@ p{ text-wrap:pretty; }
   margin-top:24px; font-size:clamp(16px,1.7vw,19px); color:rgba(244,245,247,.82); max-width:46ch;
 }
 .hero-ctas{ margin-top:36px; display:flex; gap:16px; flex-wrap:wrap; }
+.hero-shop-hint{ margin-top:18px; font-size:14px; color:rgba(255,255,255,.72); }
+.hero-shop-hint a{ color:var(--turquoise); font-weight:600; text-decoration:underline; text-underline-offset:3px; }
+.hero-shop-hint a:hover{ color:#fff; }
 
 .hero-product{
   position:absolute; right:clamp(10px,1.6vw,32px); left:clamp(10px,1.6vw,32px);
@@ -422,7 +490,7 @@ p{ text-wrap:pretty; }
    y la izquierda por delante. */
 .lentes-orbit{
   position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
-  width:72%; aspect-ratio:1/1;
+  width:64%; aspect-ratio:1/1;
 }
 .lentes-ring{
   position:absolute; inset:0; pointer-events:none; will-change:transform;
@@ -432,7 +500,7 @@ p{ text-wrap:pretty; }
 .lentes-dot{
   /* Centrado sobre la circunferencia del anillo, no colgando de su borde. */
   position:absolute; left:50%; top:0;
-  width:30%; aspect-ratio:1/1; padding:0;
+  width:34%; aspect-ratio:1/1; padding:0;
   border:3px solid var(--turquoise); border-radius:50%;
   background:#fff; cursor:pointer; pointer-events:auto;
   box-shadow:0 8px 22px rgba(75,46,90,.22); outline-offset:4px;
@@ -452,6 +520,40 @@ p{ text-wrap:pretty; }
 .lentes-dot img{
   width:100%; height:100%; border-radius:50%; object-fit:cover;
   opacity:1; mix-blend-mode:normal; display:block;
+}
+
+/* Etiqueta del componente. Cuelga del punto y, al vivir dentro del boton que ya
+   contrarresta el giro del anillo, se mantiene horizontal en todo el recorrido.
+   Solo se animan opacity y transform: la orbita sigue corriendo en la GPU. */
+.lentes-dot-label{
+  position:absolute; left:50%; top:calc(100% + 9px); z-index:1;
+  padding:5px 12px; border-radius:var(--radius-pill);
+  background:rgba(255,255,255,.94);
+  -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+  border:1px solid rgba(75,46,90,.10);
+  box-shadow:0 4px 14px rgba(75,46,90,.16);
+  font-size:11.5px; font-weight:700; letter-spacing:.02em; line-height:1.25;
+  color:var(--purple); white-space:nowrap; pointer-events:none;
+  opacity:0; transform:translateX(-50%) translateY(5px) scale(.94);
+  transition:opacity .34s var(--ease), transform .34s var(--ease),
+             background .2s var(--ease), color .2s var(--ease), box-shadow .25s var(--ease);
+}
+/* Entra despues de su foto, con el mismo escalonado del anillo. */
+.about-visual--lentes.in .lentes-dot-label{
+  opacity:1; transform:translateX(-50%) translateY(0) scale(1);
+  transition-delay:calc(var(--i) * 70ms + 130ms);
+}
+/* Estado activo: la pildora confirma cual componente se esta leyendo. */
+@media (hover:hover) and (pointer:fine){
+  .about-visual--lentes.in .lentes-dot:hover .lentes-dot-label{
+    background:var(--purple); color:#fff; border-color:var(--purple);
+    box-shadow:0 8px 20px rgba(75,46,90,.32); transition-delay:0ms;
+  }
+}
+.about-visual--lentes.in .lentes-dot:focus-visible .lentes-dot-label,
+.about-visual--lentes.in .lentes-dot[aria-expanded="true"] .lentes-dot-label{
+  background:var(--purple); color:#fff; border-color:var(--purple);
+  box-shadow:0 8px 20px rgba(75,46,90,.32); transition-delay:0ms;
 }
 @media (hover:hover) and (pointer:fine){
   .about-visual--lentes.in .lentes-dot:hover{
@@ -504,6 +606,7 @@ p{ text-wrap:pretty; }
 
 @media (prefers-reduced-motion: reduce){
   .lentes-ring, .lentes-dot{ animation:none; }
+  .lentes-dot-label{ opacity:1; transform:translateX(-50%); transition:opacity .2s linear, background .2s linear, color .2s linear; }
   .lentes-ring{ transform:rotate(calc(var(--i) * 90deg)); z-index:3; }
   .lentes-ring:nth-child(2){ z-index:1; }
   .lentes-dot{ transform:translate(-50%,-50%) rotate(calc(var(--i) * -90deg)); }
@@ -536,16 +639,18 @@ p{ text-wrap:pretty; }
   .about-grid{ grid-template-columns:1fr; gap:36px; }
   .about-visual{ order:-1; aspect-ratio:16/10; }
   .about-visual--lentes{ order:-1; aspect-ratio:1/1; width:100%; max-width:460px; margin:0 auto; }
-  .lentes-stage{ top:48%; }
-  .lentes-orbit{ width:70%; }
+  .lentes-stage{ top:46%; }
+  .lentes-orbit{ width:62%; }
+  .lentes-dot-label{ font-size:11px; padding:4px 10px; top:calc(100% + 8px); }
   .about-visual--lentes .about-visual-static-lentes{ width:calc(64% / var(--lentes-art)); }
   .lentes-tip{ left:12px; right:12px; bottom:12px; font-size:13px; padding:12px 14px; }
 }
 /* En pantallas angostas el panel ocupa proporcionalmente más alto: se sube la
    órbita para que el texto siga cayendo por debajo de todo. */
 @media (max-width:520px){
-  .lentes-stage{ top:47%; }
-  .lentes-orbit{ width:68%; }
+  .lentes-stage{ top:45%; }
+  .lentes-orbit{ width:60%; }
+  .lentes-dot-label{ font-size:10px; padding:3px 8px; top:calc(100% + 6px); letter-spacing:0; }
   .about-visual--lentes .about-visual-static-lentes{ width:calc(62% / var(--lentes-art)); }
   .lentes-tip{ left:10px; right:10px; bottom:10px; font-size:12.5px; padding:11px 13px; }
 }
@@ -706,16 +811,95 @@ p{ text-wrap:pretty; }
 .testi-author span{ font-size:12.5px; color:var(--gray-mid); }
 
 /* ==========================================================================
+   TUTORIALES (video + audio)
+   ========================================================================== */
+/* Selector segmentado video / audio. */
+.tut-switch{
+  display:inline-flex; gap:4px; padding:5px; margin:8px 0 32px;
+  background:var(--gray-light); border:1px solid var(--border); border-radius:var(--radius-pill);
+}
+.tut-switch-btn{
+  display:inline-flex; align-items:center; gap:8px; border:0; cursor:pointer;
+  padding:10px 20px; border-radius:var(--radius-pill); background:transparent;
+  font-family:var(--font-body); font-size:14.5px; font-weight:600; color:var(--gray-mid);
+  transition:background .22s var(--ease), color .22s var(--ease), box-shadow .22s var(--ease);
+}
+.tut-switch-btn svg{ width:18px; height:18px; flex:none; }
+.tut-switch-btn:hover{ color:var(--dark); }
+.tut-switch-btn.is-active{ background:var(--white); color:var(--purple); box-shadow:var(--shadow-s); }
+.tut-switch-btn:focus-visible{ outline:3px solid var(--turquoise); outline-offset:2px; }
+@media (max-width:520px){
+  .tut-switch{ display:flex; width:100%; }
+  .tut-switch-btn{ flex:1; justify-content:center; padding:10px 12px; font-size:13.5px; }
+}
+.tut-panel:focus{ outline:none; }
+.tut-panel[hidden]{ display:none; }
+
+.video-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+@media (max-width:900px){ .video-grid{ grid-template-columns:1fr 1fr; } }
+@media (max-width:620px){ .video-grid{ grid-template-columns:1fr; } }
+
+.video-card{
+  background:var(--white); border:1px solid var(--border); border-radius:var(--radius-m);
+  overflow:hidden; box-shadow:var(--shadow-s); display:flex; flex-direction:column;
+  transition:transform .25s var(--ease), box-shadow .25s var(--ease);
+}
+.video-card:hover{ transform:translateY(-3px); box-shadow:var(--shadow-m); }
+/* Fachada: hasta que no se pulsa no se carga el iframe de YouTube. */
+.video-facade{
+  position:relative; width:100%; aspect-ratio:16/9; display:block; padding:0; border:0;
+  background:var(--dark); cursor:pointer; overflow:hidden;
+}
+.video-facade img{ width:100%; height:100%; object-fit:cover; display:block; transition:transform .4s var(--ease), opacity .25s var(--ease); }
+.video-facade:hover img{ transform:scale(1.04); opacity:.85; }
+.video-facade .play-badge{
+  position:absolute; inset:0; margin:auto; width:58px; height:58px; border-radius:50%;
+  background:rgba(28,28,34,.72); backdrop-filter:blur(4px); color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  transition:background .2s var(--ease), transform .2s var(--ease);
+}
+.video-facade:hover .play-badge{ background:var(--purple); transform:scale(1.08); }
+.video-facade .play-badge svg{ width:22px; height:22px; margin-left:3px; }
+.video-facade:focus-visible{ outline:3px solid var(--turquoise); outline-offset:-3px; }
+.video-card iframe{ width:100%; aspect-ratio:16/9; border:0; display:block; }
+.video-card-body{ padding:16px 18px 18px; }
+.video-card-body .chapter{ font-size:11.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--purple); }
+.video-card-body h4{ font-size:16px; font-weight:600; margin-top:4px; }
+
+.audio-list{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+@media (max-width:820px){ .audio-list{ grid-template-columns:1fr; } }
+.audio-card{
+  background:var(--white); border:1px solid var(--border); border-radius:var(--radius-m);
+  padding:18px; box-shadow:var(--shadow-s);
+}
+.audio-card h4{ font-size:15.5px; font-weight:600; margin-bottom:12px; }
+.audio-card h4 .chapter{
+  display:block; font-size:11.5px; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--turquoise); color:#1a9b96; margin-bottom:3px;
+}
+.audio-card iframe{ width:100%; height:120px; border:0; display:block; border-radius:var(--radius-s); }
+
+/* ==========================================================================
    VALIDACION
    ========================================================================== */
 .trust-marquee-wrap{ overflow:hidden; margin-top:48px; -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent); mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent); }
-.trust-marquee{ display:flex; gap:56px; width:max-content; animation:trust-scroll 36s linear infinite; }
+.trust-marquee{ display:flex; gap:40px; width:max-content; animation:trust-scroll 44s linear infinite; }
 @media (prefers-reduced-motion: reduce){ .trust-marquee{ animation:none; } }
 .trust-item{
-  font-size:14.5px; font-weight:600; color:var(--gray-mid); white-space:nowrap; letter-spacing:.01em;
-  display:flex; align-items:center; gap:10px;
+  flex:none; display:flex; align-items:center; justify-content:center;
+  width:120px; height:120px; border-radius:16px; background:#fff;
+  border:1px solid rgba(0,0,0,.06); box-shadow:0 2px 10px rgba(0,0,0,.04);
+  overflow:hidden;
 }
-.trust-item svg{ width:18px; height:18px; color:var(--purple); flex:none; }
+.trust-item img{
+  width:100%; height:100%; object-fit:contain; display:block;
+  filter:grayscale(1); opacity:.72; transition:filter .3s ease, opacity .3s ease;
+}
+.trust-item:hover img{ filter:grayscale(0); opacity:1; }
+@media (max-width:640px){
+  .trust-marquee{ gap:24px; }
+  .trust-item{ width:92px; height:92px; border-radius:14px; }
+}
 @keyframes trust-scroll{ from{ transform:translateX(0);} to{ transform:translateX(-50%);} }
 .anid-note{ margin-top:28px; font-size:13.5px; color:var(--gray-mid); }
 
@@ -888,14 +1072,73 @@ p{ text-wrap:pretty; }
 .hero-video-off-btn:active{ transform:scale(.94); }
 body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ display:flex; }
 
+/* --------------------------------------------------------------------------
+   BARRA DE COMPRA FIJA (solo movil)
+   Aparece al dejar atras el hero y se esconde con el carro abierto.
+   -------------------------------------------------------------------------- */
+.buybar{ display:none; }
+
+@media (max-width:760px){
+  .buybar{
+    display:flex; align-items:center; gap:12px;
+    position:fixed; left:0; right:0; bottom:0; z-index:640;
+    padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+    background:rgba(255,255,255,.94); backdrop-filter:blur(14px) saturate(160%);
+    -webkit-backdrop-filter:blur(14px) saturate(160%);
+    border-top:1px solid var(--border); box-shadow:0 -6px 24px rgba(28,28,34,.10);
+    transform:translateY(110%); transition:transform .32s var(--ease);
+  }
+  .buybar.is-visible{ transform:translateY(0); }
+  body.cart-open .buybar{ transform:translateY(110%); }
+
+  .buybar-info{ display:flex; flex-direction:column; min-width:0; flex:1; }
+  .buybar-label{
+    font-size:11.5px; font-weight:600; letter-spacing:.05em; text-transform:uppercase;
+    color:var(--gray-mid); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .buybar-price{ font-size:16px; font-weight:700; color:var(--dark); font-variant-numeric:tabular-nums; }
+
+  .buybar-cart{
+    position:relative; flex:none; width:46px; height:46px; border-radius:50%;
+    border:1px solid var(--border); background:var(--white); color:var(--purple);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .buybar-cart svg{ width:21px; height:21px; }
+  .buybar-cart-count{
+    position:absolute; top:-3px; right:-3px; min-width:19px; height:19px; padding:0 5px; border-radius:999px;
+    background:var(--purple); color:#fff; font-size:11px; font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .buybar-cta{
+    flex:none; padding:14px 24px; border-radius:var(--radius-pill);
+    background:var(--dark); color:#fff; font-size:15px; font-weight:700; white-space:nowrap;
+  }
+  .buybar-cta:active{ transform:scale(.97); }
+
+  /* La barra no debe tapar el pie ni los botones flotantes. */
+  body{ padding-bottom:74px; }
+  .float-stack{ bottom:calc(74px + env(safe-area-inset-bottom)); }
+  .gestixpro-badge{ bottom:calc(74px + env(safe-area-inset-bottom)); }
+  .a11y-toggle{ bottom:calc(130px + env(safe-area-inset-bottom)); }
+  .hero-video-off-btn{ bottom:calc(130px + env(safe-area-inset-bottom)); }
+}
+@media (max-width:760px) and (prefers-reduced-motion: reduce){
+  .buybar{ transition:none; }
+}
+
+@media (max-width:400px){
+  .buybar{ gap:8px; padding-left:10px; padding-right:10px; }
+  .buybar-cta{ padding:13px 16px; font-size:14px; }
+}
+
 @media (max-width:620px){
-  .float-stack{ right:14px; bottom:14px; gap:12px; }
+  .float-stack{ right:14px; gap:12px; }
   .whatsapp-btn{ width:52px; height:52px; }
   .scrolltop-btn{ width:40px; height:40px; }
-  .gestixpro-badge{ left:14px; bottom:14px; height:38px; padding:0 14px; font-size:12px; }
+  .gestixpro-badge{ left:14px; height:38px; padding:0 14px; font-size:12px; }
   .gestixpro-badge span{ display:inline; }
-  .a11y-toggle{ left:14px; bottom:70px; width:44px; height:44px; }
-  .hero-video-off-btn{ left:66px; bottom:70px; width:44px; height:44px; }
+  .a11y-toggle{ left:14px; bottom:calc(126px + env(safe-area-inset-bottom)); width:44px; height:44px; }
+  .hero-video-off-btn{ left:66px; bottom:calc(126px + env(safe-area-inset-bottom)); width:44px; height:44px; }
   .hero-video-off-btn svg{ width:19px; height:19px; }
 }
 
@@ -906,6 +1149,7 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
   padding:20px; transform:translateY(12px) scale(.97); opacity:0; pointer-events:none; transition:all .22s var(--ease);
 }
 .a11y-panel.open{ transform:translateY(0) scale(1); opacity:1; pointer-events:auto; }
+@media (max-width:760px){ .a11y-panel{ bottom:calc(186px + env(safe-area-inset-bottom)); } }
 .a11y-panel h4{ font-size:14px; font-weight:700; margin-bottom:14px; }
 .a11y-grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
 .a11y-btn{
@@ -992,8 +1236,9 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
     <nav class="nav-links" id="navLinks" aria-label="Navegación principal">
       <a href="#que-es">Qué es Anny</a>
       <a href="#funciones">Funciones</a>
-      <a href="#productos">Tienda</a>
+      <a href="#productos" class="nav-shop">Tienda</a>
       <a href="#testimonios">Testimonios</a>
+      <a href="#tutoriales">Tutoriales</a>
       <a href="#contacto">Contacto</a>
     </nav>
     <div class="nav-actions">
@@ -1034,6 +1279,7 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
         <a href="#productos" class="btn btn-primary">Comprar Anny</a>
         <a href="#que-es" class="btn btn-ghost-dark">Conoce Anny</a>
       </div>
+      <p class="hero-shop-hint">Lentes, bastones y accesorios · Precios en pesos chilenos · <a href="#productos">Ver la tienda</a></p>
     </div>
   </div>
 
@@ -1088,6 +1334,7 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
                       data-title="Botones"
                       data-text="uno enciende y apaga los sensores y otro enciende el micrófono para el reconocedor de voz.">
                 <img src="assets/img/que-es/botones.webp" alt="" aria-hidden="true">
+                <span class="lentes-dot-label" aria-hidden="true">Botones</span>
                 <span class="sr-only">Botones: uno enciende y apaga los sensores y otro enciende el micrófono para el reconocedor de voz.</span>
               </button>
             </div>
@@ -1096,6 +1343,7 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
                       data-title="Sensores y motores vibradores"
                       data-text="detectan objetos a la altura de los hombros y el rostro, produciendo vibraciones en las patillas del lente.">
                 <img src="assets/img/que-es/sensores.webp" alt="" aria-hidden="true">
+                <span class="lentes-dot-label" aria-hidden="true">Sensores</span>
                 <span class="sr-only">Sensores y motores vibradores: detectan objetos a la altura de los hombros y el rostro, produciendo vibraciones en las patillas del lente.</span>
               </button>
             </div>
@@ -1104,6 +1352,7 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
                       data-title="Micrófono y parlantes"
                       data-text="permiten realizar comandos de voz, escuchar indicaciones de la guía GPS o de un tutor durante una Ayuda.">
                 <img src="assets/img/que-es/microfono.webp" alt="" aria-hidden="true">
+                <span class="lentes-dot-label" aria-hidden="true">Micrófono</span>
                 <span class="sr-only">Micrófono y parlantes: permiten realizar comandos de voz, escuchar indicaciones de la guía GPS o de un tutor durante una Ayuda.</span>
               </button>
             </div>
@@ -1112,6 +1361,7 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
                       data-title="Cámara"
                       data-text="permite que un tutor elegido por el usuario ingrese a la cámara para resolver una situación de manera conjunta; también permite la detección e identificación de objetos en tiempo real.">
                 <img src="assets/img/que-es/camara.webp" alt="" aria-hidden="true">
+                <span class="lentes-dot-label" aria-hidden="true">Cámara</span>
                 <span class="sr-only">Cámara: permite que un tutor elegido por el usuario ingrese a la cámara para resolver una situación de manera conjunta; también permite la detección e identificación de objetos en tiempo real.</span>
               </button>
             </div>
@@ -1200,11 +1450,11 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
 <!-- ==========================================================================
      PRODUCTOS
      ========================================================================== -->
-<section class="section" id="productos">
+<section class="section section--alt" id="productos">
   <div class="container">
-    <span class="eyebrow">Tienda</span>
-    <h2 class="section-title">Productos y precios</h2>
-    <p class="section-sub">Todos los precios están expresados en pesos chilenos (CLP).</p>
+    <span class="eyebrow eyebrow--shop">Tienda</span>
+    <h2 class="section-title">Compra tus lentes Anny</h2>
+    <p class="section-sub">Los lentes inteligentes, el Kit Completo y los accesorios de movilidad, disponibles directamente aquí. Agrega lo que necesites al carro y coordinamos la compra contigo. Todos los precios están expresados en pesos chilenos (CLP).</p>
 
     <div class="products-grid" id="productsGrid">
       <!-- Product cards injected by JS from PRODUCTS array -->
@@ -1215,7 +1465,7 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
 <!-- ==========================================================================
      TESTIMONIOS
      ========================================================================== -->
-<section class="section section--alt" id="testimonios">
+<section class="section" id="testimonios">
   <div class="container">
     <span class="eyebrow">Testimonios</span>
     <h2 class="section-title">Personas que ya se mueven con Anny</h2>
@@ -1262,43 +1512,29 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
 <!-- ==========================================================================
      VALIDACION Y RESPALDO
      ========================================================================== -->
-<section class="section">
+<section class="section section--alt">
   <div class="container">
     <span class="eyebrow">Validación y respaldo</span>
     <h2 class="section-title">Fuimos validados y premiados por</h2>
   <div class="trust-marquee-wrap" aria-label="Instituciones que validaron y premiaron el proyecto Anny">
-    <div class="trust-marquee" aria-hidden="true">
-      <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m5 13 4 4L19 7"/></svg>Congreso de la Nación Argentina</span>
-      <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m5 13 4 4L19 7"/></svg>Everis, an NTT Data Company</span>
-      <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m5 13 4 4L19 7"/></svg>MIT</span>
-      <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m5 13 4 4L19 7"/></svg>CorLab</span>
-      <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m5 13 4 4L19 7"/></svg>CIPPEC</span>
-      <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m5 13 4 4L19 7"/></svg>Start-Up Chile</span>
-      <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m5 13 4 4L19 7"/></svg>Incuba COR</span>
-      <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m5 13 4 4L19 7"/></svg>Mayma</span>
-      <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m5 13 4 4L19 7"/></svg>Doing Labs, Universidad Blas Pascal</span>
-      <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m5 13 4 4L19 7"/></svg>ANDÉN, Centro de Innovación y Emprendimientos Tecnológicos</span>
-      <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m5 13 4 4L19 7"/></svg>Facultad de Ciencias Económicas</span>
-      <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m5 13 4 4L19 7"/></svg>Emprendé conCiencia</span>
-      <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m5 13 4 4L19 7"/></svg>IAE Business School</span>
-      <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m5 13 4 4L19 7"/></svg>JB</span>
-      <!-- duplicated for seamless marquee loop -->
-      <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m5 13 4 4L19 7"/></svg>Congreso de la Nación Argentina</span>
-      <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m5 13 4 4L19 7"/></svg>Everis, an NTT Data Company</span>
-      <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m5 13 4 4L19 7"/></svg>MIT</span>
-      <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m5 13 4 4L19 7"/></svg>CorLab</span>
-      <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m5 13 4 4L19 7"/></svg>CIPPEC</span>
-      <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m5 13 4 4L19 7"/></svg>Start-Up Chile</span>
-      <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m5 13 4 4L19 7"/></svg>Incuba COR</span>
-      <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m5 13 4 4L19 7"/></svg>Mayma</span>
-      <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m5 13 4 4L19 7"/></svg>Doing Labs, Universidad Blas Pascal</span>
-      <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m5 13 4 4L19 7"/></svg>ANDÉN, Centro de Innovación y Emprendimientos Tecnológicos</span>
-      <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m5 13 4 4L19 7"/></svg>Facultad de Ciencias Económicas</span>
-      <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m5 13 4 4L19 7"/></svg>Emprendé conCiencia</span>
-      <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m5 13 4 4L19 7"/></svg>IAE Business School</span>
-      <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m5 13 4 4L19 7"/></svg>JB</span>
-    </div>
+    <div class="trust-marquee" id="trustMarquee" aria-hidden="true"></div>
   </div>
+  <ul class="sr-only">
+    <li>Congreso de la Nación Argentina</li>
+    <li>Everis, an NTT Data Company</li>
+    <li>Massachusetts Institute of Technology</li>
+    <li>CorLab</li>
+    <li>CIPPEC</li>
+    <li>Start-Up Chile</li>
+    <li>Incuba COR</li>
+    <li>Mayma</li>
+    <li>Doing Labs, Universidad Blas Pascal</li>
+    <li>ANDÉN, Centro de Innovación y Emprendimientos Tecnológicos</li>
+    <li>Facultad de Ciencias Económicas</li>
+    <li>Emprendé conCiencia</li>
+    <li>IAE Business School</li>
+    <li>JB</li>
+  </ul>
     <p class="anid-note">Proyecto respaldado por ANID, Agencia Nacional de Investigación y Desarrollo de Chile (ver pie de página).</p>
   </div>
 </section>
@@ -1306,7 +1542,7 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
 <!-- ==========================================================================
      FAQ
      ========================================================================== -->
-<section class="section section--alt">
+<section class="section">
   <div class="container">
     <span class="eyebrow">Preguntas frecuentes</span>
     <h2 class="section-title">Resolvemos tus dudas sobre Anny</h2>
@@ -1345,6 +1581,142 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
 </section>
 
 <!-- ==========================================================================
+     TUTORIALES
+     ========================================================================== -->
+<section class="section section--alt" id="tutoriales">
+  <div class="container">
+    <span class="eyebrow">Tutoriales</span>
+    <h2 class="section-title">Aprende a usar Anny paso a paso</h2>
+    <p class="section-sub">Seis capítulos que recorren la aplicación de principio a fin. Elige el formato que mejor te acomode: los mismos contenidos están disponibles en video y en audio.</p>
+
+    <div class="tut-switch" role="tablist" aria-label="Formato de los tutoriales">
+      <button type="button" role="tab" id="tabVideo" class="tut-switch-btn is-active"
+              aria-selected="true" aria-controls="panelVideo" tabindex="0">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="4"/><path d="m10.5 9 5 3-5 3z" fill="currentColor" stroke="none"/></svg>
+        Ver en video
+      </button>
+      <button type="button" role="tab" id="tabAudio" class="tut-switch-btn"
+              aria-selected="false" aria-controls="panelAudio" tabindex="-1">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 10v4M7.5 6v12M12 3v18M16.5 7v10M21 10v4"/></svg>
+        Escuchar en audio
+      </button>
+    </div>
+
+    <div class="tut-panel" role="tabpanel" id="panelVideo" aria-labelledby="tabVideo" tabindex="0">
+      <div class="video-grid">
+        <article class="video-card reveal">
+          <button type="button" class="video-facade" data-video-id="ytZKIEV7U7k"
+                  aria-label="Reproducir el videotutorial Capítulo 1: Introducción">
+            <img src="https://i.ytimg.com/vi/ytZKIEV7U7k/hqdefault.jpg" alt="" loading="lazy" decoding="async" width="480" height="360">
+            <span class="play-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+          </button>
+          <div class="video-card-body">
+            <span class="chapter">Capítulo 1</span>
+            <h4>Introducción</h4>
+          </div>
+        </article>
+        <article class="video-card reveal">
+          <button type="button" class="video-facade" data-video-id="2oQinOLrIYM"
+                  aria-label="Reproducir el videotutorial Capítulo 2: Registro y Login">
+            <img src="https://i.ytimg.com/vi/2oQinOLrIYM/hqdefault.jpg" alt="" loading="lazy" decoding="async" width="480" height="360">
+            <span class="play-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+          </button>
+          <div class="video-card-body">
+            <span class="chapter">Capítulo 2</span>
+            <h4>Registro y Login</h4>
+          </div>
+        </article>
+        <article class="video-card reveal">
+          <button type="button" class="video-facade" data-video-id="L_PpTALT6bQ"
+                  aria-label="Reproducir el videotutorial Capítulo 3: Funciones del inicio">
+            <img src="https://i.ytimg.com/vi/L_PpTALT6bQ/hqdefault.jpg" alt="" loading="lazy" decoding="async" width="480" height="360">
+            <span class="play-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+          </button>
+          <div class="video-card-body">
+            <span class="chapter">Capítulo 3</span>
+            <h4>Funciones del inicio</h4>
+          </div>
+        </article>
+        <article class="video-card reveal">
+          <button type="button" class="video-facade" data-video-id="B2Vxv59yTHI"
+                  aria-label="Reproducir el videotutorial Capítulo 4: Menú Lateral">
+            <img src="https://i.ytimg.com/vi/B2Vxv59yTHI/hqdefault.jpg" alt="" loading="lazy" decoding="async" width="480" height="360">
+            <span class="play-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+          </button>
+          <div class="video-card-body">
+            <span class="chapter">Capítulo 4</span>
+            <h4>Menú Lateral</h4>
+          </div>
+        </article>
+        <article class="video-card reveal">
+          <button type="button" class="video-facade" data-video-id="0KncsNQ84cQ"
+                  aria-label="Reproducir el videotutorial Capítulo 5: Vinculación de dispositivos">
+            <img src="https://i.ytimg.com/vi/0KncsNQ84cQ/hqdefault.jpg" alt="" loading="lazy" decoding="async" width="480" height="360">
+            <span class="play-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+          </button>
+          <div class="video-card-body">
+            <span class="chapter">Capítulo 5</span>
+            <h4>Vinculación de dispositivos</h4>
+          </div>
+        </article>
+        <article class="video-card reveal">
+          <button type="button" class="video-facade" data-video-id="_HHFD7qK_U8"
+                  aria-label="Reproducir el videotutorial Capítulo 6: Menú Inferior">
+            <img src="https://i.ytimg.com/vi/_HHFD7qK_U8/hqdefault.jpg" alt="" loading="lazy" decoding="async" width="480" height="360">
+            <span class="play-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+          </button>
+          <div class="video-card-body">
+            <span class="chapter">Capítulo 6</span>
+            <h4>Menú Inferior</h4>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <div class="tut-panel" role="tabpanel" id="panelAudio" aria-labelledby="tabAudio" tabindex="0" hidden>
+      <div class="audio-list">
+        <article class="audio-card reveal">
+          <h4><span class="chapter">Capítulo 1</span>Introducción</h4>
+          <iframe title="Audiotutorial Capítulo 1: Introducción" loading="lazy" scrolling="no" frameborder="no"
+                  allow="autoplay"
+                  src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/889817251&color=%234B2E5A&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false"></iframe>
+        </article>
+        <article class="audio-card reveal">
+          <h4><span class="chapter">Capítulo 2</span>Registro y Login</h4>
+          <iframe title="Audiotutorial Capítulo 2: Registro y Login" loading="lazy" scrolling="no" frameborder="no"
+                  allow="autoplay"
+                  src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/889806031&color=%234B2E5A&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false"></iframe>
+        </article>
+        <article class="audio-card reveal">
+          <h4><span class="chapter">Capítulo 3</span>Funciones del inicio</h4>
+          <iframe title="Audiotutorial Capítulo 3: Funciones del inicio" loading="lazy" scrolling="no" frameborder="no"
+                  allow="autoplay"
+                  src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/889791385&color=%234B2E5A&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false"></iframe>
+        </article>
+        <article class="audio-card reveal">
+          <h4><span class="chapter">Capítulo 4</span>Menú Lateral</h4>
+          <iframe title="Audiotutorial Capítulo 4: Menú Lateral" loading="lazy" scrolling="no" frameborder="no"
+                  allow="autoplay"
+                  src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/889813156&color=%234B2E5A&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false"></iframe>
+        </article>
+        <article class="audio-card reveal">
+          <h4><span class="chapter">Capítulo 5</span>Vinculación de dispositivos</h4>
+          <iframe title="Audiotutorial Capítulo 5: Vinculación de dispositivos" loading="lazy" scrolling="no" frameborder="no"
+                  allow="autoplay"
+                  src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/889814197&color=%234B2E5A&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false"></iframe>
+        </article>
+        <article class="audio-card reveal">
+          <h4><span class="chapter">Capítulo 6</span>Menú Inferior</h4>
+          <iframe title="Audiotutorial Capítulo 6: Menú Inferior" loading="lazy" scrolling="no" frameborder="no"
+                  allow="autoplay"
+                  src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/889815607&color=%234B2E5A&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false"></iframe>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================================
      CONTACTO
      ========================================================================== -->
 <section class="section" id="contacto">
@@ -1373,6 +1745,10 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
           <a class="contact-channel" href="https://facebook.com/lentesanny.cl" target="_blank" rel="noopener">
             <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M14 8h3V4h-3a4 4 0 0 0-4 4v3H7v4h3v7h4v-7h3l1-4h-4V8a1 1 0 0 1 1-1z"/></svg></div>
             <div><strong>Facebook</strong><span>lentesanny.cl</span></div>
+          </a>
+          <a class="contact-channel" href="https://www.youtube.com/@caecuslab6055" target="_blank" rel="noopener">
+            <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="4"/><path d="m10.5 9 5 3-5 3z" fill="currentColor" stroke="none"/></svg></div>
+            <div><strong>YouTube</strong><span>@caecuslab6055</span></div>
           </a>
         </div>
 
@@ -1429,7 +1805,7 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
 <!-- ==========================================================================
      CTA FINAL
      ========================================================================== -->
-<section class="section">
+<section class="section section--alt">
   <div class="container">
     <div class="cta-final reveal">
       <div class="cta-final-inner">
@@ -1465,17 +1841,26 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
           <a href="https://facebook.com/lentesanny.cl" target="_blank" rel="noopener" aria-label="Facebook de Anny">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M14 8h3V4h-3a4 4 0 0 0-4 4v3H7v4h3v7h4v-7h3l1-4h-4V8a1 1 0 0 1 1-1z"/></svg>
           </a>
+          <a href="https://www.youtube.com/@caecuslab6055" target="_blank" rel="noopener" aria-label="Canal de YouTube de CaecusLab">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="4"/><path d="m10.5 9 5 3-5 3z" fill="currentColor" stroke="none"/></svg>
+          </a>
         </div>
+        <a href="#productos" class="footer-shop-cta">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 3h2l2.4 12.2a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.6L21 7H6"/><circle cx="9" cy="21" r="1.4"/><circle cx="18" cy="21" r="1.4"/></svg>
+          Ir a la tienda
+        </a>
       </div>
       <div class="footer-col">
         <h4>Sitio</h4>
         <ul>
           <li><a href="#que-es">Qué es Anny</a></li>
           <li><a href="#funciones">Funciones</a></li>
+          <li><a href="#productos" class="footer-shop-link">Tienda</a></li>
           <li><a href="#testimonios">Testimonios</a></li>
+          <li><a href="#tutoriales">Tutoriales</a></li>
         </ul>
       </div>
-      <div class="footer-col">
+      <div class="footer-col footer-col--shop">
         <h4>Tienda</h4>
         <ul>
           <li><a href="#productos">Lentes Anny v2.0</a></li>
@@ -1490,6 +1875,7 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
           <li><a href="mailto:info@caecuslab.com">info@caecuslab.com</a></li>
           <li><a href="https://instagram.com/lentesanny.cl" target="_blank" rel="noopener">@lentesanny.cl</a></li>
           <li><a href="#contacto">Chat de WhatsApp</a></li>
+          <li><a href="https://www.youtube.com/@caecuslab6055" target="_blank" rel="noopener">YouTube CaecusLab</a></li>
         </ul>
         <h4 class="footer-col-legal">Legal</h4>
         <ul>
@@ -1554,6 +1940,7 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
     <button class="a11y-btn" data-toggle="a11y-light-bg">Fondo claro</button>
     <button class="a11y-btn" data-toggle="a11y-underline-links">Subrayar enlaces</button>
     <button class="a11y-btn" data-toggle="a11y-readable-font">Fuente legible</button>
+    <button class="a11y-btn" id="a11yMotionBtn" type="button" aria-pressed="false">Reducir movimiento</button>
     <button class="a11y-btn a11y-reset" id="a11yReset">Restablecer</button>
   </div>
 </div>
@@ -1567,6 +1954,19 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
 </a>
 
 <img class="lentes-flying" id="lentesFlying" src="assets/img/productos/lentes.png" alt="" aria-hidden="true">
+
+<!-- Barra de compra fija en movil: acceso permanente a la tienda y al carro. -->
+<div class="buybar" id="buyBar">
+  <div class="buybar-info">
+    <span class="buybar-label">Lentes Anny v2.0</span>
+    <span class="buybar-price" id="buyBarPrice">$900.000 CLP</span>
+  </div>
+  <button type="button" class="buybar-cart" id="buyBarCart" aria-label="Abrir carro de compras" aria-haspopup="dialog">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 3h2l2.4 12.2a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.6L21 7H6"/><circle cx="9" cy="21" r="1.4"/><circle cx="18" cy="21" r="1.4"/></svg>
+    <span class="buybar-cart-count" id="buyBarCount" aria-hidden="true">0</span>
+  </button>
+  <a href="#productos" class="buybar-cta">Ver la tienda</a>
+</div>
 
 <div class="float-stack">
   <button class="scrolltop-btn" id="scrollTopBtn" aria-label="Volver arriba">
@@ -2114,6 +2514,8 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
     var count = cartCount();
     cartCountEl.textContent = count;
     cartCountText.textContent = count + ' productos en el carro';
+    var buyBarCount = document.getElementById('buyBarCount');
+    if (buyBarCount) buyBarCount.textContent = count;
 
     var ids = Object.keys(cart);
     if (!ids.length){
@@ -2171,14 +2573,18 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
   function openCart(){
     cartOverlay.classList.add('open');
     cartDrawer.classList.add('open');
+    document.body.classList.add('cart-open');
     document.body.style.overflow = 'hidden';
   }
   function closeCart(){
     cartOverlay.classList.remove('open');
     cartDrawer.classList.remove('open');
+    document.body.classList.remove('cart-open');
     document.body.style.overflow = '';
   }
   document.getElementById('cartOpenBtn').addEventListener('click', openCart);
+  var buyBarCartBtn = document.getElementById('buyBarCart');
+  if (buyBarCartBtn) buyBarCartBtn.addEventListener('click', openCart);
   document.getElementById('cartCloseBtn').addEventListener('click', closeCart);
   cartOverlay.addEventListener('click', closeCart);
   document.addEventListener('keydown', function(e){
@@ -2285,6 +2691,62 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
     });
   });
 
+  /* Reducir movimiento: detiene orbita, marquesina, revelados y video de fondo.
+     Se recuerda en localStorage porque quien lo necesita lo necesita siempre. */
+  var motionBtn = document.getElementById('a11yMotionBtn');
+  var MOTION_KEY = 'anny:reduce-motion';
+
+  /* Recuerda si la pausa del video la provocó este control: al desactivarlo se
+     reanuda solo en ese caso, para no reproducir un video que el usuario ya
+     había pausado por su cuenta con los controles del hero. */
+  var motionPausedHeroVideo = false;
+
+  function applyReducedMotion(on){
+    document.documentElement.classList.toggle('a11y-reduce-motion', on);
+    motionBtn.classList.toggle('active', on);
+    motionBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+
+    /* El video de fondo es movimiento continuo: se pausa junto con el resto.
+       heroVideo es el adaptador sobre el reproductor de Vimeo, no un <video>. */
+    var hv = (typeof heroVideo !== 'undefined') ? heroVideo : null;
+    if (hv){
+      if (on){
+        if (!hv.paused){ hv.pause(); motionPausedHeroVideo = true; }
+      } else if (motionPausedHeroVideo){
+        hv.play();
+        motionPausedHeroVideo = false;
+      }
+    }
+
+    try { localStorage.setItem(MOTION_KEY, on ? '1' : '0'); } catch(e){}
+  }
+
+  motionBtn.addEventListener('click', function(){
+    applyReducedMotion(!document.documentElement.classList.contains('a11y-reduce-motion'));
+  });
+
+  /* Al cargar con la preferencia guardada, el reproductor de Vimeo todavía no
+     existe y arranca solo unos instantes después: se vuelve a pausar en cuanto
+     avisa que empezó, y queda anotado para reanudarlo al desactivar el control. */
+  if (typeof heroVideo !== 'undefined' && heroVideo){
+    heroVideo.addEventListener('playing', function(){
+      if (document.documentElement.classList.contains('a11y-reduce-motion')){
+        heroVideo.pause();
+        motionPausedHeroVideo = true;
+      }
+    });
+  }
+
+  /* Se restaura la eleccion previa; si nunca eligio, manda el ajuste del sistema. */
+  var storedMotion = null;
+  try { storedMotion = localStorage.getItem(MOTION_KEY); } catch(e){}
+  if (storedMotion === '1'){
+    applyReducedMotion(true);
+  } else if (storedMotion === null && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    motionBtn.classList.add('active');
+    motionBtn.setAttribute('aria-pressed','true');
+  }
+
   document.querySelector('[data-action="inc-text"]').addEventListener('click', function(){
     a11yFontSize = Math.min(a11yFontSize + 10, 160);
     document.documentElement.style.fontSize = a11yFontSize + '%';
@@ -2300,6 +2762,7 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
       document.body.classList.remove(cls);
     });
     a11yPanel.querySelectorAll('.a11y-btn[data-toggle]').forEach(function(btn){ btn.classList.remove('active'); });
+    applyReducedMotion(false);
   });
 
   /* ------------------------------------------------------------------
@@ -2527,6 +2990,138 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
     document.addEventListener('keydown', function(e){
       if (e.key === 'Escape' && locked){ locked = null; render(); }
     });
+  })();
+
+  /* ------------------------------------------------------------------
+     Marquesina de validación: logos en orden aleatorio en cada carga.
+     Se duplica la tanda para que el bucle sea continuo.
+     ------------------------------------------------------------------ */
+  (function(){
+    var marquee = document.getElementById('trustMarquee');
+    if (!marquee) return;
+
+    var logos = [
+      { file:'congreso-nacion-argentina.jpg', name:'Congreso de la Nación Argentina' },
+      { file:'everis-ntt-data.jpg',           name:'Everis, an NTT Data Company' },
+      { file:'mit.jpg',                       name:'Massachusetts Institute of Technology' },
+      { file:'corlab.jpg',                    name:'CorLab' },
+      { file:'cippec.jpg',                    name:'CIPPEC' },
+      { file:'start-up-chile.jpg',            name:'Start-Up Chile' },
+      { file:'incuba-cor.jpg',                name:'Incuba COR' },
+      { file:'mayma.jpg',                     name:'Mayma' },
+      { file:'doing-labs-ubp.jpg',            name:'Doing Labs, Universidad Blas Pascal' },
+      { file:'anden.jpg',                     name:'ANDÉN, Centro de Innovación y Emprendimientos Tecnológicos' },
+      { file:'facultad-ciencias-economicas.jpg', name:'Facultad de Ciencias Económicas' },
+      { file:'emprende-conciencia.jpg',       name:'Emprendé conCiencia' },
+      { file:'iae-business-school.jpg',       name:'IAE Business School' },
+      { file:'jb.jpg',                        name:'JB' }
+    ];
+
+    /* Fisher-Yates: el orden cambia en cada visita. */
+    for (var i = logos.length - 1; i > 0; i--){
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = logos[i]; logos[i] = logos[j]; logos[j] = t;
+    }
+
+    var frag = document.createDocumentFragment();
+    for (var pass = 0; pass < 2; pass++){
+      logos.forEach(function(logo){
+        var span = document.createElement('span');
+        span.className = 'trust-item';
+        var img = document.createElement('img');
+        img.src = 'assets/img/validacion/' + logo.file;
+        img.alt = logo.name;
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        img.width = 150; img.height = 150;
+        span.appendChild(img);
+        frag.appendChild(span);
+      });
+    }
+    marquee.appendChild(frag);
+  })();
+
+  /* ------------------------------------------------------------------
+     Videotutoriales: la portada es solo una imagen. El iframe de YouTube
+     se crea al pulsar, para no cargar seis reproductores en cada visita.
+     ------------------------------------------------------------------ */
+  (function(){
+    var facades = document.querySelectorAll('.video-facade');
+    if (!facades.length) return;
+
+    Array.prototype.forEach.call(facades, function(facade){
+      facade.addEventListener('click', function(){
+        var id = facade.getAttribute('data-video-id');
+        var label = facade.getAttribute('aria-label') || '';
+        var iframe = document.createElement('iframe');
+        iframe.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0&modestbranding=1&hl=es';
+        iframe.title = label.replace(/^Reproducir el /, '');
+        iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+        iframe.allowFullscreen = true;
+        facade.parentNode.replaceChild(iframe, facade);
+        iframe.focus();
+      });
+    });
+  })();
+
+  /* ------------------------------------------------------------------
+     Tutoriales: un solo listado de capitulos con selector video / audio.
+     Patron de pestanas ARIA, con flechas izquierda y derecha.
+     ------------------------------------------------------------------ */
+  (function(){
+    var tablist = document.querySelector('.tut-switch');
+    if (!tablist) return;
+
+    var tabs = Array.prototype.slice.call(tablist.querySelectorAll('[role="tab"]'));
+
+    function select(tab, moveFocus){
+      tabs.forEach(function(t){
+        var on = (t === tab);
+        t.classList.toggle('is-active', on);
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+        t.tabIndex = on ? 0 : -1;
+        document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+      });
+      if (moveFocus) tab.focus();
+    }
+
+    tabs.forEach(function(tab, i){
+      tab.addEventListener('click', function(){ select(tab, false); });
+      tab.addEventListener('keydown', function(e){
+        var next = null;
+        if (e.key === 'ArrowRight') next = tabs[(i + 1) % tabs.length];
+        else if (e.key === 'ArrowLeft') next = tabs[(i - 1 + tabs.length) % tabs.length];
+        else if (e.key === 'Home') next = tabs[0];
+        else if (e.key === 'End') next = tabs[tabs.length - 1];
+        if (next){ e.preventDefault(); select(next, true); }
+      });
+    });
+  })();
+
+  /* ------------------------------------------------------------------
+     Barra de compra fija (movil): aparece una vez que el hero queda atras,
+     para no competir con el llamado principal de la portada.
+     ------------------------------------------------------------------ */
+  (function(){
+    var bar = document.getElementById('buyBar');
+    if (!bar) return;
+
+    /* El precio se toma del catalogo, para que no quede desfasado. */
+    var priceEl = document.getElementById('buyBarPrice');
+    var lentes = null;
+    for (var i = 0; i < PRODUCTS.length; i++){
+      if (PRODUCTS[i].id === 'lentes-anny-v2') lentes = PRODUCTS[i];
+    }
+    if (lentes && priceEl) priceEl.textContent = CLP.format(lentes.price) + ' CLP';
+
+    var hero = document.getElementById('inicio');
+    if (!hero || !('IntersectionObserver' in window)){
+      bar.classList.add('is-visible');
+      return;
+    }
+    new IntersectionObserver(function(entries){
+      bar.classList.toggle('is-visible', !entries[0].isIntersecting);
+    }, { threshold:0, rootMargin:'-80px 0px 0px 0px' }).observe(hero);
   })();
 
 })();
