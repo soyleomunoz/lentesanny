@@ -25,9 +25,15 @@
 <meta name="twitter:image:alt" content="Lentes inteligentes Anny sobre fondo violeta, con el texto Autonomía al alcance">
 <meta name="theme-color" content="#1C1C22">
 <link rel="icon" type="image/png" href="assets/img/anny_logotipo.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap">
+<style id="local-fonts">
+/* Tipografías alojadas en el sitio (Fontsource, licencia OFL) */
+@font-face{font-family:"Outfit";font-style:normal;font-weight:300;font-display:swap;src:url(assets/fonts/outfit-latin-300-normal.woff2) format("woff2")}
+@font-face{font-family:"Outfit";font-style:normal;font-weight:400;font-display:swap;src:url(assets/fonts/outfit-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"Outfit";font-style:normal;font-weight:500;font-display:swap;src:url(assets/fonts/outfit-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:"Outfit";font-style:normal;font-weight:600;font-display:swap;src:url(assets/fonts/outfit-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:"Outfit";font-style:normal;font-weight:700;font-display:swap;src:url(assets/fonts/outfit-latin-700-normal.woff2) format("woff2")}
+@font-face{font-family:"Outfit";font-style:normal;font-weight:800;font-display:swap;src:url(assets/fonts/outfit-latin-800-normal.woff2) format("woff2")}
+</style>
 
 <style>
 /* ==========================================================================
@@ -1796,6 +1802,7 @@ body.hero-video-ready.hero-in-view:not(.hero-video-off) .hero-video-off-btn{ dis
           <span class="form-error" id="err-fMessage" role="alert"></span>
         </div>
         <button type="submit" class="btn btn-primary btn-block">Enviar por WhatsApp</button>
+<small style="display:block;font-size:13px;line-height:1.5;margin-top:10px;opacity:.85">Al enviar este formulario aceptas el tratamiento de tus datos según nuestra <a href="privacidad.html" style="color:inherit;text-decoration:underline">Política de privacidad</a>.</small>
         <div class="form-status" id="formStatus" role="status"></div>
       </form>
     </div>
