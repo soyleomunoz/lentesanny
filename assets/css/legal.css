@@ -26,6 +26,10 @@
 
 *,*::before,*::after{ box-sizing:border-box; }
 html{ scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+/* Móvil: sin desplazamiento horizontal de la página (red de seguridad) */
+html,body{ overflow-x:hidden; overscroll-behavior-x:none; }
+html{ touch-action:pan-y pinch-zoom; }
+body{ position:relative; width:100%; }
 @media (prefers-reduced-motion: reduce){
   html{ scroll-behavior:auto; }
   *,*::before,*::after{ transition-duration:.001ms !important; animation-duration:.001ms !important; }

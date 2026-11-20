@@ -120,6 +120,10 @@ body.a11y-readable-font, body.a11y-readable-font *{
 *,*::before,*::after{ box-sizing:border-box; }
 html{ scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
 html:focus-within{ scroll-behavior:smooth; }
+/* Móvil: sin desplazamiento horizontal de la página (red de seguridad) */
+html,body{ overflow-x:hidden; overscroll-behavior-x:none; }
+html{ touch-action:pan-y pinch-zoom; }
+body{ position:relative; width:100%; }
 @media (prefers-reduced-motion: reduce){
   html{ scroll-behavior:auto; }
   *,*::before,*::after{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; scroll-behavior:auto !important; }
