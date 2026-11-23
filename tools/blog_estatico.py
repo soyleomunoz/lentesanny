@@ -278,7 +278,7 @@ def pagina(a, todos):
 <script type="application/ld+json">{json.dumps(ld_bc, ensure_ascii=False)}</script>
 {fuentes}
 <style>
-:root{{--bg:{t['fondo']};--bg2:{t['fondo2']};--tx:{t['texto']};--mu:{t['suave']};--ac:{t['acento']};--ac2:{t.get('acento2', t['acento'])};--bd:{t['borde']};--hd:{t.get('titulos', t['texto'])};--btn-tx:{t.get('boton_texto', '#fff')};--hbg:{t.get('cabecera', 'color-mix(in srgb,' + t['fondo'] + ' 92%,transparent)')};--htx:{t.get('cabecera_texto', t['texto'])}}}
+:root{{--bg:{t['fondo']};--bg2:{t['fondo2']};--tx:{t['texto']};--mu:{t['suave']};--ac:{t['acento']};--ac2:{t.get('acento2', t['acento'])};--bd:{t['borde']};--hd:{t.get('titulos', t['texto'])};--btn-tx:{t.get('boton_texto', '#fff')};--hbg:{t.get('cabecera', 'color-mix(in srgb,' + t['fondo'] + ' 92%,transparent)')};--htx:{t.get('cabecera_texto', t['texto'])};--gx-bg:{t['acento']};--gx-fg:{t.get('boton_texto', '#fff')};--gx-bg-hover:{t.get('acento2', t['acento'])};--gx-fg-hover:{t.get('boton_texto', '#fff')}}}
 *{{box-sizing:border-box}}html,body{{overflow-x:hidden}}
 body{{margin:0;background:var(--bg);color:var(--tx);font-family:{t['fuente_texto']};font-size:17px;line-height:1.75;-webkit-font-smoothing:antialiased}}
 img{{max-width:100%;height:auto;display:block}}a{{color:var(--ac)}}:focus-visible{{outline:3px solid var(--ac);outline-offset:3px;border-radius:6px}}
