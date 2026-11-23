@@ -38,6 +38,12 @@ import unicodedata
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 CFG = json.load(open(os.path.join(ROOT, 'tools', 'blog.config.json'), encoding='utf-8'))
 SITE = CFG['site'].rstrip('/')
+# Botón Compartir (copiar, Instagram, Facebook, WhatsApp y correo): tools/gx-compartir.html
+_GX = os.path.join(ROOT, 'tools', 'gx-compartir.html')
+COMPARTIR = open(_GX, encoding='utf-8').read() if os.path.exists(_GX) else ''
+ICONO_COMPARTIR = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" '
+                   'stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/>'
+                   '<circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></svg>')
 E = html.escape
 
 MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto',
@@ -237,6 +243,9 @@ def pagina(a, todos):
     fuentes = CFG.get('fuentes_html', '').replace('url(assets/', 'url(../assets/')
     fav = CFG.get('favicon', 'favicon.ico')
     fav = fav if fav.startswith(('data:', 'http')) else '../' + fav
+    boton = (f'<button type="button" class="gx-share-btn" data-gx-compartir data-url="{url}" data-titulo="{E(a["titulo"])}" '
+             f'aria-label="Compartir este artículo" title="Compartir">{ICONO_COMPARTIR}</button>') if COMPARTIR else ''
+    barra = f'<div class="share"><span>Comparte este artículo</span>{boton}</div>' if boton else ''
     nota = f'<p class="note">{CFG["nota_articulo"]}</p>' if CFG.get('nota_articulo') else ''
     return f'''<!DOCTYPE html>
 <html lang="{CFG.get('lang', 'es-CL')}">
@@ -296,6 +305,8 @@ article p{{margin:0 0 16px}}article ul,article ol{{margin:0 0 18px;padding-left:
 .btn{{display:inline-block;background:var(--btn-tx);color:var(--ac);font-weight:700;text-decoration:none;border-radius:999px;padding:13px 22px}}
 .more{{margin-top:32px}}.more h2{{font-family:{t['fuente_titulos']};font-size:1.2rem;color:var(--hd)}}.more ul{{padding-left:20px}}.more li{{margin-bottom:6px}}
 .back{{display:inline-block;margin-top:18px;font-weight:600}}
+.metarow{{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:12px 0 22px}}.metarow .meta{{margin:0}}
+.share{{display:flex;align-items:center;gap:12px;margin:28px 0 0;padding-top:18px;border-top:1px solid var(--bd);font-weight:700;color:var(--hd)}}
 footer{{border-top:1px solid var(--bd);color:var(--mu);font-size:.88rem;padding:26px 20px 40px}}footer .in{{max-width:1160px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}}footer a{{color:var(--ac);font-weight:600}}
 {CFG.get('css_extra', '')}
 </style>
@@ -312,11 +323,12 @@ footer{{border-top:1px solid var(--bd);color:var(--mu);font-size:.88rem;padding:
     <span class="cat">{E(a['categoria'])}</span>
     <h1>{E(a['titulo'])}</h1>
     <p class="dek">{E(a['resumen'])}</p>
-    <p class="meta">{E(CFG.get('firma', CFG['nombre']))} · <time datetime="{a['fecha']}">{fecha_larga(a['fecha'])}</time>{lectura}</p>
+    <div class="metarow"><p class="meta">{E(CFG.get('firma', CFG['nombre']))} · <time datetime="{a['fecha']}">{fecha_larga(a['fecha'])}</time>{lectura}</p>{boton}</div>
     {portada}
     {toc_html}
 {cuerpo}
     {nota}
+    {barra}
   </article>
   <section class="box" aria-label="{E(cta['titulo'])}"><h2>{E(cta['titulo'])}</h2><p>{E(cta['texto'])}</p><a class="btn" href="{cta['url']}" target="_blank" rel="noopener">{E(cta['boton'])}</a></section>
   {'<section class="more" aria-label="Más artículos"><h2>Más artículos</h2><ul>' + mas + '</ul></section>' if mas else ''}
@@ -326,6 +338,7 @@ footer{{border-top:1px solid var(--bd);color:var(--mu);font-size:.88rem;padding:
   <span>© {dt.date.today().year} {E(CFG['nombre'])}. Todos los derechos reservados.</span>
   <span>{creditos}</span>
 </div></footer>
+{COMPARTIR}
 </body>
 </html>
 '''
