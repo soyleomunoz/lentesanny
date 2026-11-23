@@ -1,0 +1,49 @@
+{
+  "site": "https://lentesanny.cl",
+  "nombre": "Anny by CaecusLab",
+  "fuentes_html": "<style id=\"local-fonts\">\n/* Tipografías alojadas en el sitio (Fontsource, licencia OFL) */\n@font-face{font-family:\"Outfit\";font-style:normal;font-weight:300;font-display:swap;src:url(assets/fonts/outfit-latin-300-normal.woff2) format(\"woff2\")}\n@font-face{font-family:\"Outfit\";font-style:normal;font-weight:400;font-display:swap;src:url(assets/fonts/outfit-latin-400-normal.woff2) format(\"woff2\")}\n@font-face{font-family:\"Outfit\";font-style:normal;font-weight:500;font-display:swap;src:url(assets/fonts/outfit-latin-500-normal.woff2) format(\"woff2\")}\n@font-face{font-family:\"Outfit\";font-style:normal;font-weight:600;font-display:swap;src:url(assets/fonts/outfit-latin-600-normal.woff2) format(\"woff2\")}\n@font-face{font-family:\"Outfit\";font-style:normal;font-weight:700;font-display:swap;src:url(assets/fonts/outfit-latin-700-normal.woff2) format(\"woff2\")}\n@font-face{font-family:\"Outfit\";font-style:normal;font-weight:800;font-display:swap;src:url(assets/fonts/outfit-latin-800-normal.woff2) format(\"woff2\")}\n</style>",
+  "tema": {
+    "fondo2": "#ffffff",
+    "texto": "#222",
+    "suave": "#666",
+    "borde": "#ddd",
+    "fondo": "#4B2E5A",
+    "acento": "#2FD6D0",
+    "fuente_titulos": "'Outfit',sans-serif",
+    "fuente_texto": "'Outfit',sans-serif"
+  },
+  "og_home": {
+    "imagen": "assets/img/og-anny.jpg",
+    "estilo": "portada",
+    "titulo": "Anny"
+  },
+  "paginas_extra": [
+    {
+      "ruta": "privacidad.html"
+    },
+    {
+      "ruta": "terminos.html"
+    }
+  ],
+  "llms": {
+    "resumen": "Anny by CaecusLab son lentes inteligentes con inteligencia artificial que ayudan a personas con discapacidad visual a moverse con mayor confianza e independencia. En lentesanny.cl se pueden comprar los lentes Anny, el Kit Completo y accesorios de movilidad.",
+    "datos": [],
+    "paginas": [
+      [
+        "Tienda",
+        "",
+        "lentes Anny, kit completo, accesorios, cómo funciona y preguntas frecuentes"
+      ],
+      [
+        "Política de privacidad",
+        "privacidad.html",
+        "tratamiento de datos personales"
+      ],
+      [
+        "Términos y condiciones",
+        "terminos.html",
+        "condiciones de compra, despacho y garantía"
+      ]
+    ]
+  }
+}

@@ -1,0 +1,10 @@
+# Anny by CaecusLab
+
+> Anny by CaecusLab son lentes inteligentes con inteligencia artificial que ayudan a personas con discapacidad visual a moverse con mayor confianza e independencia. En lentesanny.cl se pueden comprar los lentes Anny, el Kit Completo y accesorios de movilidad.
+
+
+## Páginas principales
+
+- [Tienda](https://lentesanny.cl/): lentes Anny, kit completo, accesorios, cómo funciona y preguntas frecuentes
+- [Política de privacidad](https://lentesanny.cl/privacidad.html): tratamiento de datos personales
+- [Términos y condiciones](https://lentesanny.cl/terminos.html): condiciones de compra, despacho y garantía
